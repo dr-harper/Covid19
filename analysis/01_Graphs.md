@@ -1,31 +1,10 @@
----
-title: "graphs"
-author: "Michael Harper"
-output: github_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-library(here)
-library(readr)
-library(tidyverse)
-library(sf)
-library(maps)
-library(gganimate)
-library(patchwork)
-library(ggthemr)
-library(grid)
-
-# devtools::install_github('cttobin/ggthemr')
-ggthemr("light")
-```
-
+graphs
+================
+Michael Harper
 
 # Load Data
 
-```{r}
-
+``` r
 df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
                          col_types = cols())
 world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
@@ -35,13 +14,14 @@ df_all_spatial <-
   left_join(world_map)
 ```
 
+    ## Joining, by = "region"
 
 # Exploring contagion rates
 
-Media attention has been focussing on several countries, primarly, China, Italy, Iran, Spain. As I live in the UK, this will be compared.
+Media attention has been focussing on several countries, primarly,
+China, Italy, Iran, Spain. As I live in the UK, this will be compared.
 
-
-```{r casesWithTime}
+``` r
 # ---- Plot 1: cases with time
 dataSelect <- 
   df_all_spatial %>% 
@@ -69,12 +49,13 @@ p
 gt <- ggplotGrob(p)
 gt$layout$clip[gt$layout$name == "panel"] <- "off"
 grid::grid.draw(gt)
-
 ```
+
+![](01_Graphs_files/figure-gfm/casesWithTime-1.png)<!-- -->
 
 # Growth Rates
 
-```{r growthRates, fig.cap = "Rates of growth in cases of COVID-19, measured in days after the 200 case was recorded"}
+``` r
 growthRates <- 
   df_all_spatial %>% 
   filter(type == "cases") %>%
@@ -108,13 +89,14 @@ p
 gt <- ggplotGrob(p)
 gt$layout$clip[gt$layout$name == "panel"] <- "off"
 grid::grid.draw(gt)
-
 ```
+
+![Rates of growth in cases of COVID-19, measured in days after the 200
+case was recorded](01_Graphs_files/figure-gfm/growthRates-1.png)
 
 # Ranking countries
 
-```{r outbreaks, fig.height=5, fig.width=7, fig.cap= "A comparison of the normalised ranking of countries against total cases"}
-
+``` r
 outbreaks <- 
   df_all_spatial %>%
   filter(type == "cases") %>%
@@ -162,5 +144,5 @@ combined <- p1 + p2 & theme(legend.position = "right")
 combined + plot_layout(guides = "collect") + patchwork::plot_annotation(title = "Comparing normalised rates vs total cases", caption = "Note: Only displaying countries with more than 200 reported cases", subtitle = "Although China still accounts for the vast majority of cases, the overall rates are lower \nthan many European countries")
 ```
 
-
-
+![A comparison of the normalised ranking of countries against total
+cases](01_Graphs_files/figure-gfm/outbreaks-1.png)
