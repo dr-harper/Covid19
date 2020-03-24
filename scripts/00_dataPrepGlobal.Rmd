@@ -41,7 +41,8 @@ countryNameDict <- c("Czech Republic" = "Czechia",
                      "Republic of the Congo" = "Congo",
                      "Côte d'Ivoire" = "Cote d'Ivoire",
                      "Bahamas, The" = "Bahamas",
-                     "Taiwan*" = "Taiwan")
+                     "Taiwan*" = "Taiwan",
+                     "Korea, South" = "South Korea")
 ```
 
 # Loading John Hopkins Dataset
@@ -54,7 +55,7 @@ There are three separate files for different records stored within the following
 # Using the John hopkins dataset which updates daily
 rootDir <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series"
 
-files <- c("time_series_19-covid-Confirmed.csv", "time_series_19-covid-Deaths.csv", "time_series_19-covid-Recovered.csv")
+files <- c("time_series_covid19_confirmed_global.csv", "time_series_covid19_deaths_global.csv")
 ```
 
 When the data is loaded, some basic data cleaning to make the data usable for graphing. For those familiar with the tidyverse in R, most functions prefer to have data in [long format](http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/). 
@@ -90,7 +91,7 @@ This function is run across all three input dataframes and then merged into a si
 ```{r}
 # Combine data
 df_all <- map2_df(.x = files,
-                  .y = c("cases", "deaths", "recovered"),
+                  .y = c("cases", "deaths"),
                   .f = function(x,y) dataToLong(x,y))
 ```
 
@@ -111,7 +112,7 @@ firstOutbreak <-
   group_by(region) %>%
   filter(date == min(date)) %>%
   mutate(firstOutbreak = date) %>%
-  select(-c(date, value))
+  select(-c(date, value, type))
 
 # do the same as above, but this time work out when they passed the 200th case
 first200Outbreak <- 
@@ -121,18 +122,42 @@ first200Outbreak <-
   group_by(region) %>%
   filter(date == min(date)) %>%
   mutate(first200Outbreak = date) %>%
-  select(-c(date, value))
+  select(-c(date, value, type))
+
+firstDeath <- 
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(value > 0) %>%
+  group_by(region) %>%
+  filter(date == min(date)) %>%
+  mutate(firstDeath = date) %>%
+  select(-c(date, value, type))
+
+first10Deaths <- 
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(value > 10) %>%
+  group_by(region) %>%
+  filter(date == min(date)) %>%
+  mutate(first10Deaths = date) %>%
+  select(-c(date, value, type))
 
 # Calculate additional metrics such as rate of contagion
 df_cases_extra <-
   df_all %>%
   left_join(firstOutbreak) %>%
   left_join(first200Outbreak) %>%
+  left_join(firstDeath) %>%
+  left_join(first10Deaths) %>%  
   group_by(region, type) %>%
   arrange(region, type, date) %>%
-  mutate(daysSinceOutbreak = as.numeric(date - firstOutbreak)/86400,
+  mutate(daysSinceOutbreak = as.numeric(date - firstOutbreak)/86400 + 1,
          daysSinceOutbreak = ifelse(daysSinceOutbreak < 0, NA, daysSinceOutbreak),
-         daysSince200Outbreak = as.numeric(date - first200Outbreak)/86400,
+         daysSinceFirstDeath = as.numeric(date - firstDeath)/86400 + 1,
+         daysSinceFirstDeath = ifelse(daysSinceFirstDeath < 0, NA, daysSinceFirstDeath),
+         daysSince10Deaths = as.numeric(date - first10Deaths)/86400 + 1,
+         daysSince10Deaths = ifelse(daysSince10Deaths < 0, NA, daysSince10Deaths),
+         daysSince200Outbreak = as.numeric(date - first200Outbreak)/86400 + 1,
          daysSince200Outbreak = ifelse(daysSince200Outbreak < 0, NA, daysSince200Outbreak),
          changeDaily = value - lag(value, n = 1),
          changeWeekly = value - lag(value, n = 7),
@@ -140,7 +165,7 @@ df_cases_extra <-
          changeDailyPerc = ifelse(is.nan(changeDailyPerc), NA, changeDailyPerc),
          changeWeeklyPerc = round(changeWeekly/value * 100, 0),
          changeWeeklyPerc = ifelse(is.nan(changeWeeklyPerc), NA, changeWeeklyPerc)) %>%
-  select(-c(firstOutbreak, first200Outbreak))
+  select(-c(firstOutbreak, first200Outbreak, firstDeath, first10Deaths))
 
 ```
 
@@ -193,6 +218,12 @@ These can be merged into a single long data format. Note this format is not very
 df_all_spatial <- 
   df_all_extra %>%
   left_join(world_map)
+
+# Retain the continent variable
+df_all_extra <- 
+df_all_spatial %>%
+  st_as_sf() %>%
+  sf::st_drop_geometry()
 ```
 
 # Save Data
@@ -202,6 +233,7 @@ write_csv(df_all_extra, "../data/global/covid_data_global.csv", append = FALSE)
 
 sf::write_sf(world_map, "../data/global/covid_data_global_boundaries.geojson", delete_dsn = T)
 ```
+f
 ```{r}
 
 ```
