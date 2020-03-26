@@ -1,0 +1,96 @@
+---
+title: "Total Deaths"
+author: "Michael Harper"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = F, fig.align = "center")
+
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+
+# Load Data
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map)
+```
+
+
+```{r}
+df_deaths_global <- 
+  df_all_spatial %>%
+  filter(type == "deaths") %>%
+  group_by(date) %>%
+  summarise(sum = sum(value))
+
+
+# Function to easily produce straight lines on logarithmic plot
+growthRate <- function(doubleEvery, days, start = 10) {
+  start * 2**((days) / doubleEvery)
+}
+
+# Calculate the lines
+lines <- data.frame(x = 0:50) %>%
+  mutate(
+    y1 = growthRate(1, x),
+    y2 = growthRate(2, x),
+    y3 = growthRate(3, x),
+    y7 = growthRate(7, x)
+  ) %>%
+  gather(key = y, value = "values", -x)
+
+# Have to manually specify angle as this depends on the graph aspect ratio, so cannot easily be calculated
+labels <- data.frame(
+  x = c(10, 20, 32, 35),
+  y = c(growthRate(1, 10), growthRate(2, 20), growthRate(3, 32), growthRate(7, 35)),
+  label = c("Doubles Daily", "Doubles Every 2 Days", "Doubles Every 3 Days", "Doubles Every  Week"),
+  angle = c(60, 45, 34, 16)
+)
+
+baseplot <- 
+ggplot(df_deaths_global, aes(x = date, y = sum)) +
+  geom_line() +
+  labs(y = "Deaths", x = "Date")
+
+
+plot1 <- 
+  baseplot +
+  labs(subtitle = "Logarithmic Plot") + 
+  scale_y_log10(expand = c(0, 0),  breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000), minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000),
+                limits = c(1, 100000),
+                labels = function(x) format(x, scientific = FALSE)) + 
+  theme(
+    panel.grid.minor = element_line(linetype = "dashed", colour = "grey90", size = 0.2),
+    legend.position = "none")
+
+plot2 <-
+   baseplot + 
+    labs(subtitle = "Linear Plot") +
+  scale_y_continuous(limits = c(1, 100000))
+
+
+plot1 + plot2 + plot_annotation(title = "Deaths from the Coronavirus continue to rise",
+       subtitle = glue::glue("As of {date} there have been {deaths} deaths", date  = max(df_deaths_global$date), deaths = max(df_deaths_global$sum)), 
+       caption = glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}, Graph design inspired by Financial Times
+                         CC BY 4.0 Michael Harper 2020", date = max(df_deaths_global$date)))
+```
+

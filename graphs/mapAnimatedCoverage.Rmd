@@ -1,30 +1,34 @@
 ---
-title: "Visualising Covid-19 With Animated, Static and Interactive Maps"
+title: "Animated Map of Global Coverage"
 author: Michael Harper
-output: github_document
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
 ---
 
-# About
+Code to produce the animated global map:
 
-I have reflecting on the unprecedented week in the UK. Even this time last week, the country seemed fairly laid back as government advice was largely to continue with business as usual.  It is all very different to now, with schools set to close on Monday and most people either working from home or not working at all.
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F, 
+                      out.width = "100%")
+```
 
-This blog post provides details of anaylsis and data viusalisation to assess the spread of virus, giving three example maps which I have produced. Like usual, it is aimed at a technical audience of data visualisation people who want to understand how to make R graphs! Hopefully it provides an example of how you may be able to use the **gganimate** [@R-gganimate] package to produce data visualisations.
 
-# Setup
-
-The following packages are used. Note, we are using the **ggthemr** [@R-ggthemr] which is not avaialable on CRAN, so you will need to install that if you haven't already got it.
-
-```{r loadPackages}
-# Load packages
+```{r}
+# Laod packages
+library(here)
 library(readr)
 library(tidyverse)
 library(sf)
 library(maps)
 library(gganimate)
-library(ggthemr)
-library(magick) # For combining gifs
 library(patchwork)
-library(here)
+library(ggthemr)
+library(grid)
+library(magick)
 
 # devtools::install_github('cttobin/ggthemr')
 ggthemr("light")
@@ -204,65 +208,5 @@ We can visualise the final gif below!
 
 ```{r, fig.cap="Finalised plot showing the change in infection rates", echo = FALSE}
 new_gif
-
-magick::image_write(new_gif, "map.gif")
-```
-
-# Today Cases
-
-As a second data exploration, I just wanted to produce a static map of the current death totals per country, and then to highlight the top 10 countries. The following code creates Figure \@ref(fig:deathsToday). In these plots, I am using the **patchwork** [@R-patchwork] package to combine the two ggplot objects into a single plot:
-
-```{r deathsToday, fig.height=4, fig.width=7, fig.cap = "A summary of deaths per country"}
-# Select the current day
-deathsToday <- 
-  df_all_spatial %>%
-  filter(type == "deaths") %>%
-  group_by(region) %>%
-  filter(date == max(date, na.rm = T)) %>%
-  ungroup() %>%
-  filter(value > 0)
-
-# Make colour scale
-labels <- c("0 - 10", "10 - 100", "100-500", "500-1000", "1000+")
-deathsToday$cut <- cut(deathsToday$value, c(0,10,100,500,1000,Inf), labels = labels)
-
-# Globabl
-p1 <- deathsToday %>%
-  ggplot() +
-  geom_sf(data = world_map, fill = "grey90", colour = "white", size = 0.1) +
-  geom_sf(aes(fill = cut), colour = "black", size = 0.1) +
-  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
-  labs(fill = "Deaths") +
-  theme(plot.caption = element_text(size = rel(0.5)),
-        panel.background = element_rect(fill = "#f6f1eb"),
-        plot.background = element_rect(colour = "#f6f1eb"),
-        axis.line = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        axis.title = element_blank(),
-        legend.position = c(0.1, 0.2),
-        legend.background = element_blank(),
-        panel.grid = element_blank())
-
-p2 <- 
-  deathsToday %>%
-  top_n(n = 10, wt = value) %>%
-  ggplot(aes(x = reorder(region, value), y = value, fill = cut)) +
-  geom_col(colour = "#706f6f") +
-  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
-  coord_flip() +
-  labs(y = "Deaths",
-       x = "Country",
-       fill = "Continent",
-       caption = "Data used from  https://github.com/CSSEGISandData/Covid-19 2020 Johns Hopkins University") +
-  theme(panel.grid.major.y = element_blank(),
-        legend.position = "none",
-        axis.title.y = element_blank(),
-        plot.background = element_rect(colour = "#f6f1eb"),
-        aspect.ratio = 1.5)
-
-
-p1 + p2 + plot_layout(widths = c(3.5, 1)) +
-  plot_annotation(title = glue::glue("Covid-19 Deaths as of {date}", date = format(max(deathsToday$date), "%d %B")),
-                  subtitle = glue::glue("Total deaths recorded: {deaths}", deaths = sum(deathsToday$value, na.rm = T))) & theme(plot.background = element_rect(fill = "#f6f1eb"))
+magick::image_write(image = new_gif, path = "../figures/animatedMap.gif")
 ```

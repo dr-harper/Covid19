@@ -1,0 +1,70 @@
+---
+title: "Daily Deaths"
+author: "Michael Harper"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F, 
+                      out.width = "100%")
+```
+
+
+```{r}
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+```
+
+# Data Loading and Preparation
+
+As in my [previous analysis](https://mikeyharper.uk/Covid-19-march-17/), I'll be using the John hopkins dataset.As a reminder, the data can be accessed through the GitHub [repository here](https://github.com/CSSEGISandData/Covid-19), and they also offer a great dashboard for visualising the data [here](https://coronavirus.jhu.edu/map.html).
+
+```{r loadData, include=FALSE}
+# Using the John hopkins dataset which updates daily
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map) %>%
+  sf::st_as_sf()
+```
+
+
+```{r}
+df_all_spatial %>%
+  filter(
+    region %in% c("China"),
+    type == "cases"
+  ) %>%
+  ggplot() +
+  geom_col(aes(x = date, y = changeDaily, fill = region), position = "dodge") +
+  labs(title = "Daily Confirmed cases of COVID-19 in China",
+       subtitle = glue::glue(("Continued lockdowns in China have helped reduce levels new infections of COVID-19.
+       However, despite serious quarantine measures, there are still continued cases.")),
+       y = "Daily Cases",
+       x = "Date",
+       caption = glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020", date = Sys.Date())) +
+  theme(legend.position = "none")
+```

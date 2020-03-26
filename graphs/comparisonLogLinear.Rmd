@@ -1,0 +1,65 @@
+---
+title: "Logarithmic Growth Rates"
+author: "Michael Harper"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = F, fig.align = "center")
+
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+
+# Load Data
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map)
+```
+
+```{r fig.height=5, fig.width=10}
+basePlot <- 
+  df_all_extra %>% 
+  filter(region %in% c("Italy", "UK", "Spain"),
+         type == "cases") %>%
+  mutate(value = ifelse(value == 0, 2, value)) %>%
+  ggplot(aes(x = daysSinceOutbreak, y = value, colour = region, group = region)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(limits = c(-10, 60)) +
+  labs(x = "Days Since Outbreak in Country", y = "Number of reported cases")
+
+plot1 <- 
+  basePlot + 
+  scale_y_continuous(expand = c(0,0), limits = c(0,100000)) +
+  labs(subtitle = 'Linear Scale')
+
+plot2 <-
+  basePlot +
+  scale_y_log10(breaks = c(1, 10, 100, 10000, 100000), 
+                lim = c(1, 200000),
+                labels = function(x) format(x, scientific = FALSE))+
+  labs(subtitle = 'Logarithmic Scale')
+
+
+combined <- plot1 + plot2 & theme(legend.position = "right") 
+
+combined + plot_layout(guides = "collect") + plot_annotation(title = "Comparison of Linear and Logarithmic Plots of COVID-19", 
+subtitle = "Logarithmic graphs enable us to see the rate of change easier and understand the impact interventions are having")
+```

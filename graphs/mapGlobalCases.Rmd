@@ -1,0 +1,109 @@
+---
+title: "Map of Global Cases"
+author: Michael Harper
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+---
+  
+Code to produce the animated global map:
+  
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F, 
+                      out.width = "100%")
+```
+
+
+```{r}
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+```
+
+```{r loadData, include=FALSE}
+# Using the John hopkins dataset which updates daily
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map) %>%
+  sf::st_as_sf()
+ 
+```
+
+# Today Cases
+
+As a second data exploration, I just wanted to produce a static map of the current death totals per country, and then to highlight the top 10 countries. The following code creates Figure \@ref(fig:deathsToday). In these plots, I am using the **patchwork** package to combine the two ggplot objects into a single plot:
+  
+```{r deathsToday, fig.height=5, fig.width=9, fig.cap = "A summary of deaths per country"}
+# Select the current day
+deathsToday <- 
+  df_all_spatial %>%
+  filter(type == "deaths") %>%
+  group_by(region) %>%
+  filter(date == max(date, na.rm = T)) %>%
+  ungroup() %>%
+  filter(value > 0)
+
+# Make colour scale
+labels <- c("0 - 10", "10 - 100", "100-500", "500-1000", "1000+")
+deathsToday$cut <- cut(deathsToday$value, c(0,10,100,500,1000,Inf), labels = labels)
+
+# Globabl
+p1 <- deathsToday %>%
+  ggplot() +
+  geom_sf(data = world_map, fill = "grey90", colour = "white", size = 0.1) +
+  geom_sf(aes(fill = cut), colour = "black", size = 0.1) +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  labs(fill = "Deaths") +
+  theme(plot.caption = element_text(size = rel(0.5)),
+        panel.background = element_rect(fill = "#f6f1eb"),
+        plot.background = element_rect(colour = "#f6f1eb"),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.1, 0.2),
+        legend.background = element_blank(),
+        panel.grid = element_blank())
+
+p2 <- 
+  deathsToday %>%
+  top_n(n = 10, wt = value) %>%
+  ggplot(aes(x = reorder(region, value), y = value, fill = cut)) +
+  geom_col(colour = "#706f6f") +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  coord_flip() +
+  labs(y = "Deaths",
+       x = "Country",
+       fill = "Continent",
+       caption = "Data used from  https://github.com/CSSEGISandData/Covid-19 2020 Johns Hopkins University") +
+  theme(panel.grid.major.y = element_blank(),
+        legend.position = "none",
+        axis.title.y = element_blank(),
+        plot.background = element_rect(colour = "#f6f1eb"),
+        aspect.ratio = 1.5)
+
+
+p1 + p2 + plot_layout(widths = c(3.5, 1)) +
+  plot_annotation(title =  "Italy has quickly become the hotspot for global deaths",
+                  subtitle = glue::glue("Covid-19 Deaths as of {date} 
+                                                           Total deaths recorded: {deaths}",
+                                        date = format(max(deathsToday$date), "%d %B"),
+                                        deaths = sum(deathsToday$value, na.rm = T))) & theme(plot.background = element_rect(fill = "#f6f1eb"))
+```

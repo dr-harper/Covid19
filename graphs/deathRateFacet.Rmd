@@ -1,0 +1,92 @@
+---
+title: "deathRateFacet"
+author: "Michael Harper"
+date: "26/03/2020"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F, 
+                      out.width = "100%")
+```
+
+
+```{r}
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+```
+
+
+```{r loadData, include=FALSE}
+# Using the John hopkins dataset which updates daily
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map) %>%
+  sf::st_as_sf()
+```
+
+The plot below allows us to see the relative performance of more countries. We can clearly see that many countries are following the same trajectory as Italy, which provides cause for concern. 
+
+```{r fig.height=8, fig.width=12}
+
+df_plot1 <-
+  df_all_spatial %>%
+  filter(type == "cases") %>%
+  filter(daysSince200Outbreak > 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince200Outbreak)) %>%
+  ungroup() %>%
+  filter(numdaysMax > 5)
+
+df2_plot1 <- df_plot1 %>%
+  rename("area" = "region")
+
+df3_plot1 <- df_plot1 %>%
+  group_by(region) %>%
+  filter(date == max(date))
+
+ggplot(df_plot1) +
+  geom_line(data = df2_plot1, aes(x = daysSince200Outbreak, y = value, group = area), colour = "grey80") +
+  geom_line(aes(x = daysSince200Outbreak, y = value, group = region), colour = "#3a6589") +
+  geom_point(data = df3_plot1, aes(x = daysSince200Outbreak, y = value, group = region), colour = "#3a6589") +
+  labs(
+    x = "Days Since 200th Case",
+    y = "Number of Reported Cases",
+    title = "Outbreaks are now underway in many countries, with some at similar trajectories as Italy",
+    subtitle = "Cumulative number of confirmed cases, by number of days since 100th case",
+    caption = glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020", date = Sys.Date())
+  ) +
+  scale_y_log10(limits = c(200, 100000),
+                breaks = c(200, 1000, 10000, 100000),
+                labels = function(x) format(x, scientific = FALSE),
+                expand = c(0,0)) +
+  scale_x_continuous(limits = c(0, 30), expand = c(0,0)) +
+  facet_wrap(region ~ ., ncol = 9, shrink = FALSE) +
+  theme(
+    aspect.ratio = 1,
+    panel.grid = element_blank()
+  )
+```

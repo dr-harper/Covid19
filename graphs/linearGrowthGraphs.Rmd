@@ -1,0 +1,77 @@
+---
+title: "Contagion Rates Linear Graph"
+author: "Michael Harper"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F, 
+                      out.width = "100%")
+```
+
+
+```{r}
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+```
+
+The repository contains a processed dataset which is used for the analysis:
+
+```{r}
+# This is precleaned and data added within the repository
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+# Join the spatial dataset with the map
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map)
+```
+
+Media attention has been focussing on several countries, primarly, China, Italy, Iran, Spain. As I live in the UK, this will be compared:
+
+```{r casesWithTime}
+# ---- Plot 1: cases with time
+dataSelect <- 
+  df_all_spatial %>% 
+  filter(type == "cases") %>%
+  filter(region %in% c("China", "Italy", "Spain", "UK", "Iran", "France")) %>%
+  filter(value != 0)
+
+# Extract the latest data to plot the final label
+dataLabels <- dataSelect %>%
+  filter(date == max(date))
+
+# Build Plot
+p <- ggplot(dataSelect, aes(x = date, y = casespermillion)) +
+  geom_line(aes(colour = region)) +
+  labs(x = "Date",
+       y = "Cases / million",
+       caption = "Data source: 2020 Johns Hopkins University\nGraph by Michael Harper 2020",
+       title = "Cases of COVID-19 per million of population") +
+  geom_text(data = dataLabels, aes(label = region, y = casespermillion, colour = region), x = max(dataLabels$date), hjust = -.1, direction = "y", vjust = 0) +
+  theme(aspect.ratio = 0.5,
+        legend.position = "none") +
+  scale_x_datetime(limits = c(min(dataSelect$date), max(dataSelect$date) + lubridate::ddays(6)), 
+                   expand = c(0,0), breaks = "2 week", date_labels = " %d %B") +
+  theme(plot.margin = unit(c(1,5,1,1), "lines")) 
+p
+
+```
