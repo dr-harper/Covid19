@@ -2,7 +2,7 @@
 title: "Daily Deaths"
 author: "Michael Harper"
 date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
-output: 
+output:
   prettydoc::html_pretty:
     theme: cayman
 ---

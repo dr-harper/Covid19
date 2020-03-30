@@ -1,0 +1,225 @@
+---
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    theme: flatly
+    number_sections: false
+    self_contained: false
+    lib_dir: ../../docs/countries/libs
+params:
+  country: Afghanistan
+title: "National Perspective Daily Update"
+subtitle: "`r params$country`"
+---
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(echo = F, 
+                      message = F, 
+                      warning = F,
+                      echo = FALSE,
+                      fig.align = "center",
+                      out.width = "100%",
+                      dev='png')
+
+# Avoid numbers being rounded
+options(scipen = 999)
+
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+library(plotly)
+library(emojifont)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light", type = 'inner')
+
+# Load functions stored in functions file
+files.sources = list.files(here::here("functions"))
+invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
+
+# Setup captions
+caption <- glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020", date = format(Sys.time(), '%d %B %Y'))
+
+current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
+
+# Setup Text
+df <- readr::read_csv(here::here("data/global/covid_data_global.csv"),
+                      col_types = readr::cols()) %>%
+  mutate(continent = factor(continent, levels = rev(c("Asia", "Europe", "North America", "South America", "Africa", "Oceania"))))
+
+df_all <- loadData(spatial = T)
+world_map <- loadWorldMap()
+```
+
+
+
+```{r}
+df_country <- df_all %>%
+  filter(region == params$country)
+
+# Calculate metrics
+deaths <-
+  df_country %>%
+  filter(date == max(date)) %>%
+  filter(type == "deaths") %>%
+  pull(value)
+
+deaths_7_days_ago <- 
+  df_country %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "deaths") %>%
+  pull(value)
+
+cases <- 
+  df_country %>%
+  filter(date == max(date)) %>%
+  filter(type == "cases") %>%
+  pull(value)
+
+cases_7_days_ago <-
+  df_country %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "cases") %>%
+  pull(value)
+
+```
+
+
+```{r}
+p2 <- 
+  df_country %>%
+  filter(type != "recovered") %>%
+  ggplot(aes(x = date, y = value, colour = type)) +
+  geom_line() +
+  labs(title = glue::glue("Cumulative Cases and Deaths for {country}", country = params$country),
+       subtitle = glue::glue("Total number of confirmed cases: {cases}
+       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
+  theme(legend.position = "top",
+        panel.grid.minor = element_line(linetype = "dashed", colour = "grey90", size = 0.4),
+        panel.grid.major = element_line(linetype = "solid", colour = "grey90")) +
+  scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000))
+p2
+```
+
+
+
+
+```{r fig.height=4, fig.width=6}
+
+# Only show since 200th outbreak
+df_country_bar <- df_country %>%
+  filter(daysSince200Outbreak > 0)
+
+if(nrow(df_country_bar) > 0){
+  
+  p2 <- ggplot(df_country_bar) + 
+  geom_col(aes(x = date, y = changeDaily, fill = type), colour = "grey90") +
+  labs(title = "Daily number of recorded cases and deaths",
+       y = "Number",
+       x = "Date",
+       subtitle = glue::glue("Total number of confirmed cases: {cases}
+       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
+  facet_grid(type~., scales = "free_y", labeller = labeller(type = function(x) tools::toTitleCase(x))) +
+  scale_y_continuous(expand = c(0.1,0.1)) + 
+  theme(panel.grid.major.x = element_blank(),
+        legend.background = element_blank(),
+        legend.position = "none")
+
+p2
+  
+}
+
+
+```
+
+
+
+
+```{r fig.height=6, fig.width=8}
+# Define the colour palette for the plot
+set_swatch(c(
+  "#785d37",
+  "#62bba5", "#ffb84d",
+  "#aaa488", "#b2432f",
+  "#3a6589", "#9b5672",
+  "#908150", "#373634", 
+  "#569b7f", "#292217"
+))
+
+# Function to easily produce straight lines on logarithmic plot
+growthRate <- function(doubleEvery, days, start = 10) {
+  start * 2**((days) / doubleEvery)
+}
+
+# Calculate the lines
+lines <- data.frame(x = 0:50) %>%
+  mutate(
+    y1 = growthRate(1, x),
+    y2 = growthRate(2, x),
+    y3 = growthRate(3, x),
+    y7 = growthRate(7, x)
+  ) %>%
+  gather(key = y, value = "values", -x)
+
+# Have to manually specify angle as this depends on the graph aspect ratio, so cannot easily be calculated
+labels <- data.frame(
+  x = c(10, 20, 32, 35),
+  y = c(growthRate(1, 10), growthRate(2, 20), growthRate(3, 32), growthRate(7, 35)),
+  label = c("Doubles Daily", "Doubles Every 2 Days", "Doubles Every 3 Days", "Doubles Every  Week"),
+  angle = c(60, 45, 34, 16)
+)
+
+# Prepare the data
+df_plot2 <-
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(daysSince10Deaths >= 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince10Deaths)) %>%
+  filter(daysSince10Deaths <= 35)
+
+df2_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area %in% c("UK", "US", "Italy", "Spain", "France", "South Korea", "China", "Germany", "Japan", "Iran"))
+
+df3_plot2 <- df2_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+ggplot() +
+  annotate(geom = "text", x = labels$x, y = labels$y, label = labels$label, angle = labels$angle, colour = "grey50", vjust = -1) +
+  geom_line(data = lines, aes(x, values, group = y), linetype = "dashed", colour = "grey50") +
+  geom_point(data = df2_plot2, aes(x = daysSince10Deaths, y = value, group = area, colour = area), size = 1.2) +
+  geom_line(data = df2_plot2, aes(x = daysSince10Deaths, y = value, group = area, colour = area), size = 1.2) +
+  geom_point(data = df3_plot2, aes(x = daysSince10Deaths, y = value, colour = area)) +
+  geom_label(data = df3_plot2, aes(x = daysSince10Deaths, y = value, label = area, colour = area), vjust = 2) +
+  labs(x = "Days Since 10th Death",
+       y = "Cumulative Number of Deaths",
+       fill = "Country",
+       title = "COVID-19 related deaths per country",
+       subtitle = "UK, Spain and Italy have higher levels of deaths than China at the same stage of the pandemic",
+       caption = caption) +
+  scale_y_log10(expand = c(0, 0),  minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000)) +
+  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35)) +
+  coord_cartesian(xlim = c(0, 40), ylim = c(10, 50000)) +
+  theme(
+    panel.grid.minor = element_line(linetype = "dashed", colour = "grey90"),
+    legend.position = "none"
+  )
+
+```
+

@@ -1,0 +1,49 @@
+---
+title: "dailyChange"
+author: "Michael Harper"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  prettydoc::html_pretty:
+    theme: cayman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = F, fig.align = "center")
+
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light")
+
+# Load Data
+df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
+                         col_types = cols())
+world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
+
+df_all_spatial <- 
+  df_all_extra %>%
+  left_join(world_map)
+
+names(df_all_extra)
+```
+
+
+
+```{r}
+df_all_spatial %>%
+filter(type == "cases") %>%
+  mutate(average = (changeDailyPerc + lag(changeDailyPerc) + lag(changeDailyPerc, n = 2))/3) %>%
+  filter(region %in% c("UK", "China", "Italy", "Iran", "US", "Germany")) %>%
+  ggplot() +
+  geom_path(aes(x = daysSince200Outbreak, y = average, colour = region)) +
+  ylim(c(0, 100))
+```
+

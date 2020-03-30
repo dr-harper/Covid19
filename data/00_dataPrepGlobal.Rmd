@@ -47,6 +47,12 @@ countryNameDict <- c("Czech Republic" = "Czechia",
 
 # Loading John Hopkins Dataset
 
+<!---
+# Potentially could use this API in future?
+# Note, does not provide province level data
+# https://github.com/pomber/covid19
+--->
+
 For the analysis, I am using the COVID-19 dataset produced by John Hopkins University. They provide a daily updating dataset at a national level, which provides the cases, recoveries and deaths associated with the virus. The data can be accessed through the GitHub [repository here](https://github.com/CSSEGISandData/COVID-19), and they also offer a great dashboard for visualising the data [here](https://coronavirus.jhu.edu/map.html).
 
 There are three separate files for different records stored within the following directory:
@@ -55,7 +61,7 @@ There are three separate files for different records stored within the following
 # Using the John hopkins dataset which updates daily
 rootDir <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series"
 
-files <- c("time_series_covid19_confirmed_global.csv", "time_series_covid19_deaths_global.csv")
+files <- c("time_series_covid19_confirmed_global.csv", "time_series_covid19_deaths_global.csv", "time_series_covid19_recovered_global.csv")
 ```
 
 When the data is loaded, some basic data cleaning to make the data usable for graphing. For those familiar with the tidyverse in R, most functions prefer to have data in [long format](http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/). 
@@ -91,8 +97,9 @@ This function is run across all three input dataframes and then merged into a si
 ```{r}
 # Combine data
 df_all <- map2_df(.x = files,
-                  .y = c("cases", "deaths"),
+                  .y = c("cases", "deaths", "recovered"),
                   .f = function(x,y) dataToLong(x,y))
+
 ```
 
 # Calculate Additional Metrics
