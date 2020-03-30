@@ -1,11 +1,23 @@
 ---
-output: github_document
+title: COVID-19 Visualisation
+output:
+  html_document:
+    theme: flatly
+    css: ../reports/resources/style.css
+    includes:
+      in_header: ../reports/resources/header.html
+      after_body: ../reports/resources/footer.html
 ---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(echo=F, message = F)
+knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 ```
+
+```{r}
+knitr::include_graphics("../figures/animatedMap.gif")
+```
+
 
 
 # Global Analysis

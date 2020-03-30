@@ -5,9 +5,12 @@ output:
   bookdown::html_document2:
     toc: true
     toc_float: true
-    theme: simplex
-    css: style.css
+    theme: flatly
     number_sections: false
+    css: ../resources/style.css
+    includes:
+      in_header: ../resources/header.html
+      after_body: ../resources/footer.html
 ---
 
 ```{r setup, include=F}

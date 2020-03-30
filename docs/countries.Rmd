@@ -1,0 +1,45 @@
+---
+title: Country Specific Statistics
+output:
+  html_document:
+    theme: flatly
+    css: ../reports/resources/style.css
+    includes:
+      in_header: ../reports/resources/header.html
+      after_body: ../reports/resources/footer.html
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
+```
+
+If you are looking for more detail for an individual country, you can get a detailed report below. These are updated from the latest Johh Hopkins Dataset.
+
+```{r, results="asis"}
+library(stringr)
+library(glue)
+
+htmlFiles <- list.files("countries", ".html")
+letters <- LETTERS
+
+
+htmlFiles <- tools::file_path_sans_ext(htmlFiles)
+
+for(i in letters){
+  
+  files <- str_subset(htmlFiles, pattern = glue::glue("^{letter}", letter = i))
+  if(length(files > 0))
+  {
+    cat(glue::glue("\n**{letter}** ", letter = i))
+    
+    cat(glue::glue("\n - [{htmlFiles}](countries/{htmlFiles})", htmlFiles = files))
+    
+    cat("\n
+  --
+      \n")
+    
+  }
+  
+}
+
+

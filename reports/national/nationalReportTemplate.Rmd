@@ -9,8 +9,8 @@ output:
     self_contained: false
     lib_dir: ../../docs/countries/libs
     includes:
-      in_header: header.html
-      after_body: footer.html
+      in_header: ../resources/header.html
+      after_body: ../resources/footer.html
 params:
   country: Afghanistan
 title: "National Perspective Daily Update"
