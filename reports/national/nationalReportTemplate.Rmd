@@ -8,6 +8,9 @@ output:
     number_sections: false
     self_contained: false
     lib_dir: ../../docs/countries/libs
+    includes:
+      in_header: header.html
+      after_body: footer.html
 params:
   country: Afghanistan
 title: "National Perspective Daily Update"
