@@ -4,6 +4,7 @@ output:
   html_document:
     theme: flatly
     css: resources/style.css
+    lib_dir: ../../docs/countries/libs
     includes:
       in_header: resources/header.html
       after_body: resources/footer.html

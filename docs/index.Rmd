@@ -24,6 +24,14 @@ A global summary is provided below. This provides key metrics for the overall ou
 
 <button type="button" class="btn btn-primary">[dailyOverview](global)</button>
 
+```{r, out.width= "50%"}
+knitr::include_graphics("summary_files/figure-html/unnamed-chunk-7-1.png")
+knitr::include_graphics("summary_files/figure-html/unnamed-chunk-4-1.png")
+
+
+```
+
+
 # Country Analysis
 
 Separate Analysis is provided for each country:

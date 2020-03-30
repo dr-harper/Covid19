@@ -7,6 +7,8 @@ output:
     toc_float: true
     theme: flatly
     number_sections: false
+    self_contained: false
+    lib_dir: ../../docs/libs
     css: ../../docs/resources/style.css
     includes:
       in_header: ../../docs/resources/header.html
