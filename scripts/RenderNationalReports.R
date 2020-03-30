@@ -6,7 +6,7 @@ countries_list <- unique(countries$region)
 
 library(rmarkdown)
 
-for(i in c(countries_list[1:2], "UK", "US")){
+for(i in c(countries_list)){
 
   filename <- glue::glue("docs/countries/{region}.html", region = i)
 
@@ -16,3 +16,8 @@ for(i in c(countries_list[1:2], "UK", "US")){
 
 }
 
+
+global <- here("reports/global/dailyOverview.Rmd")
+
+rmarkdown::render(global,
+                  output_file = here("docs/global.html"))

@@ -1,0 +1,39 @@
+body {
+  background-color: #ffffff;
+}
+
+.fluid-row {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.rmdcaution, .rmdimportant, .rmdnote, .rmdtip, .rmdinfo, .rmdwarning, .tip, .question, .important, .exercise {
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  background: #f5f5f5 5px center/3em no-repeat;
+  border-radius: 10px;
+}
+.rmdcaution {
+  background-image: url("images/caution.png");
+}
+.rmdinfo {
+  background-image: url("images/info.png");
+}
+.rmdimportant {
+  background-image: url("images/important.png");
+}
+.rmdnote {
+  background-image: url("images/note.png");
+}
+.rmdtip {
+  background-image: url("images/tip.png");
+}
+.rmdwarning {
+  background-image: url("images/warning.png");
+}
+.tip {
+  background-image: url("images/tip.png");
+}
+.question {
+  background-image: url("images/question.png");
+}

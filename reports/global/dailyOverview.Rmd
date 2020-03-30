@@ -7,10 +7,10 @@ output:
     toc_float: true
     theme: flatly
     number_sections: false
-    css: ../resources/style.css
+    css: ../../docs/resources/style.css
     includes:
-      in_header: ../resources/header.html
-      after_body: ../resources/footer.html
+      in_header: ../../docs/resources/header.html
+      after_body: ../../docs/resources/footer.html
 ---
 
 ```{r setup, include=F}
@@ -49,7 +49,7 @@ invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 # Setup captions
 caption <- glue::glue("Data Source: John Jopkins University
                          Data updated on {date}
-                         CC BY 4.0 Michael Harper 2020", date = format(Sys.time(), '%d %B %Y'))
+                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
 current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
 
@@ -67,7 +67,9 @@ The ongoing Coronavirus pandemic and availability of [global data on outbreaks](
 
 This page provides daily updates for the latest on the Covid-19 outbreak, and not only aims to display the results, but explain the context in which they should be read. Hopefully, it should provide you with the necessary understanding in a way which is makes it clear to see the trends and direction of the outbreak.
 
-## Global Cases {.tabset}
+This web page will update daily at approximately 12pm GMT. Bookmark it for the latest statistics.
+
+## Global Cases
 
 ```{r calculateGlobalMetrics}
 df_summary <- 
@@ -112,9 +114,13 @@ There are **`r cases`** recorded cases and **`r deaths`** recorded deaths. In th
 # Add valuebox
 ```
 
-Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a logarithmic scale: this is much more useful than a linear plot. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control
+Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a logarithmic scale: this is much more useful than a linear plot. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
 
-Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, but in general it is expected that confirmed cases are much lower than known currently recorded. Secondly, it is currently unclear how much of the population are asymptiomatic.
+```{block2, type = "rmdimportant", echo = T}
+Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, in particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
+```
+
+##  {.tabset}
 
 ### Logarithmic
 
@@ -153,11 +159,11 @@ p2 <- ggplot(df_summary, aes(x = date, y = sum, colour = type)) +
 p2
 ```
 
-##
+## Numbers of Deaths Daily
 
-Note, there are concerns raised between the ways that countries have been collecting data. The numbers of deaths give a more consistent comparison of statistics.
+The numbers of deaths give a more consistent comparison of statistics.
 
-```{r fig.height=3, fig.width=6}
+```{r dailyDeaths, fig.height=3, fig.width=6, fig.cap = "Barplot showing the numbers of daily deaths"}
 df_sum_continent <- 
   df %>%
   filter(type == "deaths") %>%

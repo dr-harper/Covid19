@@ -1,12 +1,12 @@
 ---
-title: COVID-19 Visualisation
+title: ""
 output:
   html_document:
     theme: flatly
-    css: ../reports/resources/style.css
+    css: resources/style.css
     includes:
-      in_header: ../reports/resources/header.html
-      after_body: ../reports/resources/footer.html
+      in_header: resources/header.html
+      after_body: resources/footer.html
 ---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -18,12 +18,11 @@ knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 knitr::include_graphics("../figures/animatedMap.gif")
 ```
 
-
-
 # Global Analysis
 
-[dailyOverview](dailyOverview)
+A global summary is provided below. This provides key metrics for the overall outbreak, along with graphs detailing the primary countries of interest. 
 
+<button type="button" class="btn btn-primary">[dailyOverview](global)</button>
 
 # Country Analysis
 
@@ -44,13 +43,11 @@ for(i in letters){
   files <- str_subset(htmlFiles, pattern = glue::glue("^{letter}", letter = i))
   if(length(files > 0))
   {
-    cat(glue::glue("\n**{letter}** ", letter = i))
+    cat(glue::glue("\n**{letter}**<br/>", letter = i))
     
-    cat(glue::glue("\n - [{htmlFiles}](countries/{htmlFiles})", htmlFiles = files))
+    cat(glue::glue("[{htmlFiles}](countries/{htmlFiles}) - ", htmlFiles = files))
     
-    cat("\n
-  --
-      \n")
+    cat("<br/><br/>")
     
   }
   

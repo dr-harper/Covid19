@@ -3,10 +3,10 @@ title: Country Specific Statistics
 output:
   html_document:
     theme: flatly
-    css: ../reports/resources/style.css
+    css: resources/style.css
     includes:
-      in_header: ../reports/resources/header.html
-      after_body: ../reports/resources/footer.html
+      in_header: resources/header.html
+      after_body: resources/footer.html
 ---
 
 ```{r include = FALSE}
