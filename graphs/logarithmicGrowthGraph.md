@@ -4,6 +4,14 @@ Michael Harper
 Last updated: 31 March, 2020
 
 ``` r
+# Set R Markdown Options
+knitr::opts_chunk$set(message = F, 
+                      warning = F,
+                      echo = T,
+                      out.width = "100%")
+```
+
+``` r
 # Laod packages
 library(here)
 library(readr)

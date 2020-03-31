@@ -6,10 +6,11 @@ output:
   github_document
 ---
 
-```{r setup, include=F}
+```{r setup, include=T}
 # Set R Markdown Options
 knitr::opts_chunk$set(message = F, 
-                      warning = F, 
+                      warning = F,
+                      echo = T,
                       out.width = "100%")
 ```
 
