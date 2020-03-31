@@ -1,20 +1,9 @@
----
-title: "logarithmic growth graphs"
-author: "Michael Harper"
-date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
-output: 
-  github_document
----
+logarithmic growth graphs
+================
+Michael Harper
+Last updated: 31 March, 2020
 
-```{r setup, include=F}
-# Set R Markdown Options
-knitr::opts_chunk$set(message = F, 
-                      warning = F, 
-                      out.width = "100%")
-```
-
-
-```{r}
+``` r
 # Laod packages
 library(here)
 library(readr)
@@ -33,22 +22,14 @@ ggthemr("light")
 
 # Data Loading and Preparation
 
-As in my [previous analysis](https://mikeyharper.uk/Covid-19-march-17/), I'll be using the John hopkins dataset.As a reminder, the data can be accessed through the GitHub [repository here](https://github.com/CSSEGISandData/Covid-19), and they also offer a great dashboard for visualising the data [here](https://coronavirus.jhu.edu/map.html).
+As in my [previous analysis](https://mikeyharper.uk/Covid-19-march-17/),
+I’ll be using the John hopkins dataset.As a reminder, the data can be
+accessed through the GitHub [repository
+here](https://github.com/CSSEGISandData/Covid-19), and they also offer a
+great dashboard for visualising the data
+[here](https://coronavirus.jhu.edu/map.html).
 
-```{r loadData, include=FALSE}
-# Using the John hopkins dataset which updates daily
-df_all_extra <- read_csv(here("data/global/covid_data_global.csv"),
-                         col_types = cols())
-world_map <- sf::read_sf(here("data/global/covid_data_global_boundaries.geojson"))
-
-df_all_spatial <- 
-  df_all_extra %>%
-  left_join(world_map) %>%
-  sf::st_as_sf()
- 
-```
-
-```{r fig.height=8, fig.width=8, message = F, warning = F}
+``` r
 # Define the colour palette for the plot
 set_swatch(c(
   "#785d37",
@@ -101,8 +82,7 @@ df3_plot2 <- df2_plot2 %>%
   filter(date == max(date))
 ```
 
-
-```{r fig.height=8, fig.width=8, message = F, warning = F}
+``` r
 ggplot() +
   annotate(geom = "text", x = labels$x, y = labels$y, label = labels$label, angle = labels$angle, colour = "grey50", vjust = -1) +
   geom_line(data = lines, aes(x, values, group = y), linetype = "dashed", colour = "grey50") +
@@ -127,3 +107,5 @@ ggplot() +
     legend.position = "none"
   )
 ```
+
+<img src="logarithmicGrowthGraph_files/figure-gfm/unnamed-chunk-3-1.png" width="100%" />
