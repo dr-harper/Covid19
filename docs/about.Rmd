@@ -1,6 +1,21 @@
 ---
-title: "about"
-author: "Michael Harper"
-date: "30/03/2020"
-output: html_document
+title: "About"
 ---
+
+The ongoing Coronavirus pandemic and availability of [global data on outbreaks](https://github.com/CSSEGISandData/COVID-19) has led to a flurry of different online dashboards. While there are [some fantastic examples](https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6), they can in isolation be of limited use without the interpreation required.
+
+This website aims to make it easy to get clear statistics on the progress of the COVID-19 outbreak, and provide country disaggregated statistics.
+
+# The Data
+
+This analysis is largely based on the John Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset.
+
+# Contact
+
+If you have any queries about the data, or suggestions on graphs that you would like to see included, I would love to hear from you!
+
+Twitter: https://twitter.com/DrMichaelHarper
+LinkedIn: https://www.linkedin.com/in/dr-harper/
+
+
+

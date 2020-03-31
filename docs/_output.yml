@@ -1,0 +1,8 @@
+html_document:
+    self_contained: false
+    lib_dir: libs
+    theme: flatly
+    css: resources/style.css
+    includes:
+      in_header: resources/header.html
+      after_body: resources/footer.html

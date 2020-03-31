@@ -1,0 +1,522 @@
+---
+title: "Global Perspective Daily Update"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(echo = F, 
+                      message = F, 
+                      warning = F,
+                      echo = FALSE,
+                      fig.align = "center",
+                      out.width = "100%")
+
+# Avoid numbers being rounded
+options(scipen = 999)
+
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+library(plotly)
+library(emojifont)
+
+library(shiny)
+library(shinydashboard)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light", type = 'inner')
+
+# Load functions stored in functions file
+files.sources = list.files(here::here("functions"))
+invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
+
+# Setup captions
+caption <- glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
+
+current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
+
+# Setup Text
+df <- readr::read_csv(here::here("data/global/covid_data_global.csv"),
+                      col_types = readr::cols()) %>%
+  mutate(continent = factor(continent, levels = rev(c("Asia", "Europe", "North America", "South America", "Africa", "Oceania"))))
+
+df_all <- loadData(spatial = T)
+world_map <- loadWorldMap()
+
+```
+
+This page provides daily updates for the latest on the Covid-19 outbreak, and not only aims to display the results, but explain the context in which they should be read. Hopefully, it should provide you with the necessary understanding in a way which is makes it clear to see the trends and direction of the outbreak.
+
+This web page will update daily at approximately 12pm GMT. Bookmark it for the latest statistics.
+
+## Headline Metrics
+
+```{r calculateGlobalMetrics}
+df_summary <- 
+  df %>%
+  group_by(date, type) %>%
+  summarise(sum = sum(value)) %>%
+  ungroup() %>%
+  mutate(date = as.Date(date))
+
+# Calculate metrics
+deaths <-
+  df_summary %>%
+  filter(date == max(date)) %>%
+  filter(type == "deaths") %>%
+  pull(sum)
+
+deaths_7_days_ago <- 
+  df_summary %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "deaths") %>%
+  pull(sum)
+
+cases <- 
+  df_summary %>%
+  filter(date == max(date)) %>%
+  filter(type == "cases") %>%
+  pull(sum)
+
+cases_7_days_ago <-
+  df_summary %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "cases") %>%
+  pull(sum)
+
+increasePercentageCases <- scales::percent(cases/cases_7_days_ago)
+increasePercentageDeaths <- scales::percent(deaths/deaths_7_days_ago)
+```
+
+There are **`r cases`** recorded cases and **`r deaths`** recorded deaths. In the past 7 days, this has increase by **`r increasePercentageCases`** and **`r increasePercentageDeaths`** respectively. 
+
+```{r}
+fluidRow(
+    infoBox(
+      "Confirmed Cases", cases, icon = icon("users"), color = "blue", fill = TRUE
+    ),
+    infoBox(
+      "Deaths", deaths, icon = icon("cross"), color = "red",
+      fill = TRUE
+    ),
+    infoBox(
+      "Increase in cases", increasePercentageCases, icon = icon("line-chart"),  subtitle = "Change in cases in last 7 days", color = "purple"
+    )
+)
+```
+
+Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a logarithmic scale: this is much more useful than a linear plot. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
+
+```{block2, type = "rmdimportant", echo = T}
+Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, in particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
+```
+
+##  {.tabset}
+
+### Logarithmic
+
+```{r plotCumulativeCasesandDeaths, fig.cap = "Cumulative number of cases"}
+p1 <- ggplot(df_summary, aes(x = date, y = sum, colour = type)) +
+  geom_line() +
+  geom_point(aes(text = paste0(stringr::str_to_title(type), ": ", sum))) +
+  labs(title = "Cumulative Cases and Deaths",
+       subtitle = glue::glue("Logarithmic scale enables us to understand the exponential growth better
+                             Data accurate as of {date}", date = max(df_summary$date)),
+       colour = "Type",
+       y = "Count",
+       x = "Date",
+       caption = caption) +
+  theme(legend.position = "right",
+        plot.caption = element_text(size = rel(0.7))) +
+  scale_y_log10()
+p1
+```
+
+### Linear
+
+```{r plotCumulativeLinear, fig.cap = "Cumulative number of cases"}
+p2 <- ggplot(df_summary, aes(x = date, y = sum, colour = type)) +
+  geom_line() +
+  geom_point(aes(text = paste0(stringr::str_to_title(type), ": ", sum))) +
+  labs(title = "Cumulative Cases and Deaths",
+       subtitle = glue::glue("Linear plots make it hard to visualise whether the exponential growth is being controlled
+                             Data accurate as of {date}", date = max(df_summary$date)),
+       colour = "Type",
+       y = "Count",
+       x = "Date",
+       caption = caption) +
+  theme(legend.position = "right",
+        plot.caption = element_text(size = rel(0.7)))
+p2
+```
+
+## Numbers of Deaths Daily
+
+The numbers of deaths give a more consistent comparison of statistics.
+
+```{r dailyDeaths, fig.height=3, fig.width=6, fig.cap = "Barplot showing the numbers of daily deaths"}
+df_sum_continent <- 
+  df %>%
+  filter(type == "deaths") %>%
+  filter(changeDaily >= 0) %>%
+  filter(!is.na(continent))
+
+
+p2 <- ggplot(df_sum_continent, aes(x = date, y = changeDaily, fill = continent)) + 
+  geom_col() +
+  labs(title = "Number of daily recorded deaths",
+       y = "Total Deaths",
+       x = "Date",
+       fill = "Continent") +
+  scale_y_continuous(expand = c(0,0)) + 
+  theme(panel.grid.major.x = element_blank(),
+        legend.background = element_blank(),
+        legend.position = "bottom")  
+
+p2
+```
+
+
+
+```{r}
+df_sum_continent <- 
+  df %>%
+  filter(type == "deaths") %>%
+  filter(changeDaily >= 0) %>%
+  filter(!is.na(continent)) %>%
+  group_by(region) %>%
+  filter(date == max(date)) %>%
+  group_by(continent) %>%
+  summarise(sum = sum(value),
+            sum7days = sum(changeWeekly)) %>%
+  gather("key", "value", -continent)
+
+```
+
+# Growth (logarithmic)
+
+Logarithmic graphs are much better for visualising the growth of Covid-19. They enable us to 
+
+```{r fig.height=6, fig.width=8}
+# Define the colour palette for the plot
+set_swatch(c(
+  "#785d37",
+  "#62bba5", "#ffb84d",
+  "#aaa488", "#b2432f",
+  "#3a6589", "#9b5672",
+  "#908150", "#373634", 
+  "#569b7f", "#292217"
+))
+
+# Function to easily produce straight lines on logarithmic plot
+growthRate <- function(doubleEvery, days, start = 10) {
+  start * 2**((days) / doubleEvery)
+}
+
+# Calculate the lines
+lines <- data.frame(x = 0:50) %>%
+  mutate(
+    y1 = growthRate(1, x),
+    y2 = growthRate(2, x),
+    y3 = growthRate(3, x),
+    y7 = growthRate(7, x)
+  ) %>%
+  gather(key = y, value = "values", -x)
+
+# Have to manually specify angle as this depends on the graph aspect ratio, so cannot easily be calculated
+labels <- data.frame(
+  x = c(10, 20, 32, 35),
+  y = c(growthRate(1, 10), growthRate(2, 20), growthRate(3, 32), growthRate(7, 35)),
+  label = c("Doubles Daily", "Doubles Every 2 Days", "Doubles Every 3 Days", "Doubles Every  Week"),
+  angle = c(60, 45, 34, 16)
+)
+
+# Prepare the data
+df_plot2 <-
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(daysSince10Deaths >= 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince10Deaths)) %>%
+  filter(daysSince10Deaths <= 35)
+
+df2_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area %in% c("UK", "US", "Italy", "Spain", "France", "South Korea", "China", "Germany", "Japan", "Iran"))
+
+df3_plot2 <- df2_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+ggplot() +
+  annotate(geom = "text", x = labels$x, y = labels$y, label = labels$label, angle = labels$angle, colour = "grey50", vjust = -1) +
+  geom_line(data = lines, aes(x, values, group = y), linetype = "dashed", colour = "grey50") +
+  geom_point(data = df2_plot2, aes(x = daysSince10Deaths, y = value, group = area, colour = area), size = 1.2) +
+  geom_line(data = df2_plot2, aes(x = daysSince10Deaths, y = value, group = area, colour = area), size = 1.2) +
+  geom_point(data = df3_plot2, aes(x = daysSince10Deaths, y = value, colour = area)) +
+  geom_label(data = df3_plot2, aes(x = daysSince10Deaths, y = value, label = area, colour = area), vjust = 2) +
+  labs(x = "Days Since 10th Death",
+       y = "Cumulative Number of Deaths",
+       fill = "Country",
+       title = "COVID-19 related deaths per country",
+       subtitle = "UK, Spain and Italy have higher levels of deaths than China at the same stage of the pandemic",
+       caption = caption) +
+  scale_y_log10(expand = c(0, 0),  minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000)) +
+  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35)) +
+  coord_cartesian(xlim = c(0, 40), ylim = c(10, 50000)) +
+  theme(
+    panel.grid.minor = element_line(linetype = "dashed", colour = "grey90"),
+    legend.position = "none"
+  )
+
+```
+
+```{r}
+deathsToday <- 
+  df_all %>%
+  filter(type == "deaths") %>%
+  group_by(region) %>%
+  filter(date == max(date, na.rm = T)) %>%
+  ungroup() %>%
+  filter(value > 0)
+
+# Make colour scale
+labels <- c("0 - 10", "10 - 100", "100-500", "500-1000", "1000+")
+deathsToday$cut <- cut(deathsToday$value, c(0,10,100,500,1000,Inf), labels = labels)
+
+```
+
+
+
+## Global Maps {.tabset}
+
+### Interactive
+
+```{r}
+df_all_2 <- st_as_sf(df_all)
+
+deathsToday_2 <- 
+  deathsToday %>%
+  sf::st_drop_geometry()
+
+world_map2 <- world_map %>%
+  left_join(deathsToday_2, by = c("region", "continent")) %>%
+  mutate(tooltip = paste0(stringr::str_to_title(region), ": ", value))
+
+plot_2 <-
+  ggplot() +
+  geom_sf(data = world_map2, 
+          mapping = aes(fill = cut,
+                        text = tooltip,
+                        colour = tooltip),
+          size = 0.1) +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  scale_colour_manual(values = viridis::viridis_pal(option = "A")(424)) +
+  labs(fill = "Deaths",
+       title = "Map of deaths by country",
+       subtitle = current_date,
+       caption = caption) +
+  xlim(c(-90, 90)) +
+  ylim(c(-90,90)) +
+  theme(plot.caption = element_text(size = rel(0.8)),
+        panel.background = element_rect(fill = "#f6f1eb", colour = "#f6f1eb"),
+        plot.background = element_rect(fill = "#f6f1eb",  colour = "#f6f1eb"),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.background = element_blank(),
+        panel.grid = element_blank())
+
+gg_2 <- ggplotly(plot_2,  tooltip = "text")
+
+gg_2 %>%
+  style(
+    hoveron = "fills",
+    # override the color mapping
+    line.color = toRGB("gray40"),
+    # don't apply these style rules to the first trace, which is the background graticule/grid
+    traces = seq.int(2, length(gg_2$x$data))
+  ) %>%
+  hide_legend()
+```
+
+### Static Map
+
+```{r, fig.width=8, fig.height=4.32}
+# Globabl
+p1 <-
+  ggplot() +
+  geom_sf(data = world_map, fill = "grey90", colour = "black", size = 0.1) +
+  geom_sf(data = deathsToday, mapping = aes(fill = cut), colour = "black", size = 0.1) +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  labs(fill = "Deaths",
+       title = "Map of deaths by country",
+       subtitle = current_date,
+       caption = caption) +
+  theme(plot.caption = element_text(size = rel(0.8)),
+        panel.background = element_rect(fill = "#f6f1eb", colour = "#f6f1eb"),
+        plot.background = element_rect(fill = "#f6f1eb",  colour = "#f6f1eb"),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.1, 0.2),
+        legend.background = element_blank(),
+        panel.grid = element_blank())
+
+p1
+```
+
+## Biggest Outbreaks
+
+Although the outbreak started mostly within Asia, there has been a shift in the hotspot to Europe
+
+```{r, fig.height=6, fig.width=9, fig.cap = "A summary of deaths per country"}
+p2 <- 
+  deathsToday %>%
+  top_n(n = 10, wt = value) %>%
+  ggplot(aes(x = reorder(region, value), y = value, fill = cut)) +
+  geom_col(colour = "#706f6f") +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  scale_y_continuous(expand = c(0.01,0.01), limits = c(0, max(deathsToday$value) * 1.2)) +
+  labs(title = "Total Deaths due to Coronavirus",
+       y = "Deaths",
+       x = "Country",
+       fill = "Continent") +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  geom_text(aes(label = value), vjust = -1)
+
+p3 <- 
+  deathsToday %>%
+  top_n(n = 10, wt = changeWeekly) %>%
+  ggplot(aes(x = reorder(region, changeWeekly), y = changeWeekly, fill = cut)) +
+  geom_col(colour = "#706f6f") +
+  scale_fill_manual(values = c("#F2DFDC", "#E5C0B9", "#D8A197", "#CB8174", "#BE6251", "#B2432F")) +
+  scale_y_continuous(expand = c(0.01,0.01), limits = c(0, max(deathsToday$value) * 1.1)) +
+  labs(title = "Deaths in the past week",
+       y = "Deaths",
+       x = "Country",
+       fill = "Continent",
+       caption = caption) +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  geom_text(aes(label = changeWeekly), vjust = -1)
+
+
+p2 + p3 + plot_layout(ncol = 1)
+```
+
+# Assessing the Case Fatality
+
+There is still a lot of uncertainty around how the proportion of deaths caused by COVID-19. This is represented by the **Case Fatality Rate**. During an outbreak of a pandemic the CFR is a poor measure of the mortality risk of the disease. 
+
+Firstly, there is a limited understanding of how many people have actually been tested, and many countries have only been testing those which are exhibiting symptons of the virus. 
+
+As noted in the [Lancet](https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(20)30244-9/fulltext?rss=yes)
+
+>  The virus and its clinical course are new, and we still have little information about them. Health care capacity and capability factors, including the availability of health-care workers, resources, facilities, and preparedness, also affect outcomes.
+
+```{r plotCFR, fig.cap = "Case Fatality Rate of the ongoing COVID-19 Pandemic"}
+
+df_cfr <-
+  df_all %>%
+  st_drop_geometry() %>%
+  filter(type != "recovered")  %>%
+  select(region, date, value, type) %>%
+  spread(type, value) %>%
+  filter(cases > 100) %>%
+  mutate(cfr = deaths/cases) %>%
+  filter(region %in% c("UK", "Spain", "Italy", "South Korea", "China", "Iran", "Germany"))
+
+# Extract the latest data to plot the final label
+dataLabels <- df_cfr %>%
+  filter(date == max(date))
+
+
+ggplot(df_cfr, aes(date, cfr, group = region, colour = region)) +
+  geom_line() +
+  geom_point(size = 0.5) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "Case Fatality Ratio of  ongoing COVID-19 Pandemic",
+       y = "Case Fatality Rate",
+       x = "Date",
+       caption = caption) +
+   geom_text(data = dataLabels, aes(label = region),
+             x = max(dataLabels$date),
+             hjust = -.1, direction = "y") +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank()) +
+  scale_x_datetime(limits = c(min(df_cfr$date), max(df_cfr$date) + lubridate::ddays(14)), 
+                   expand = c(0,0), breaks = "2 week", date_labels = " %d %B")
+```
+
+
+It has been noted [in this study](https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/) that the current COVID outbreak seems to be following previous pandemics: initial CFRs start high and tend and trend downwards. Estimates are placing the current CFR around COVID-19 IFR lies somewhere between 0.1% and 0.26%.*
+
+The plot below provides the case fatality ratio for each country. For more detail on each countries trajectory, you can check the detailed reports available for each country (COMING SOON).
+
+```{r}
+df_cfr_today <- 
+  df_all %>%
+  st_drop_geometry() %>%
+  filter(type != "recovered")  %>%
+  select(region, date, value, type) %>%
+  spread(type, value) %>%
+  filter(cases > 100) %>%
+  mutate(cfr = deaths/cases) %>%
+  group_by(region) %>%
+  filter(date == max(date)) %>%
+  ungroup()
+
+df_cfr_filtered <- 
+  df_cfr %>%
+  group_by(region) %>%
+  filter(date == max(date)) %>% 
+  ungroup()
+  
+
+plot_3 <- ggplot(df_cfr_today, aes(x = cases, y = cfr, group = region)) +
+  scale_x_log10() +
+  scale_y_continuous(labels = scales::percent) +
+  geom_point(aes(text = region), colour = "grey") +
+  geom_text(data = df_cfr_filtered, aes(y = cfr + 0.005, label = region, colour = region)) +
+  geom_point(data = df_cfr_filtered, aes(y = cfr, colour = region)) +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  labs(title = "Current Case fatality rate for each country",
+       x = "Number of Cases",
+       y = "CFR")
+
+ggplotly(plot_3)
+
+```
+
+```{r}
+
+```
+
+
+
+
+Read more on the influences of Case Fatality Rate: https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/
+
+# Additional Reading
+
+https://ourworldindata.org/coronavirus
+
+

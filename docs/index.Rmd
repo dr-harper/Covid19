@@ -1,12 +1,5 @@
 ---
-title: ""
-output:
-  html_document:
-    theme: flatly
-    css: resources/style.css
-    includes:
-      in_header: resources/header.html
-      after_body: resources/footer.html
+title: "Coronavirus Data Visualisation"
 ---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -22,15 +15,12 @@ knitr::include_graphics("../figures/animatedMap.gif")
 
 A global summary is provided below. This provides key metrics for the overall outbreak, along with graphs detailing the primary countries of interest. 
 
-<button type="button" class="btn btn-primary">[dailyOverview](global)</button>
+<button type="button" class="btn btn-primary">[Global Summary](summary)</button>
 
 ```{r, out.width= "50%"}
 knitr::include_graphics("summary_files/figure-html/unnamed-chunk-7-1.png")
 knitr::include_graphics("summary_files/figure-html/unnamed-chunk-4-1.png")
-
-
 ```
-
 
 # Country Analysis
 
@@ -42,25 +32,15 @@ library(glue)
 
 htmlFiles <- list.files("countries", ".html")
 letters <- LETTERS
-
-
 htmlFiles <- tools::file_path_sans_ext(htmlFiles)
 
 for(i in letters){
-  
   files <- str_subset(htmlFiles, pattern = glue::glue("^{letter}", letter = i))
   if(length(files > 0))
   {
-    cat(glue::glue("\n**{letter}**<br/>", letter = i))
-    
-    cat(glue::glue("[{htmlFiles}](countries/{htmlFiles}) - ", htmlFiles = files))
-    
-    cat("<br/><br/>")
-    
+    cat(glue::glue("\n**{letter}** ", letter = i))
+    cat(glue::glue("\n - [{htmlFiles}](countries/{htmlFiles})", htmlFiles = files))
+    cat("\n \n")
   }
-  
 }
-
 ```
-
-# About
