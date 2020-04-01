@@ -21,19 +21,23 @@ meta() %>%
     image = "https://www.coviz.info/resources/animatedMap.gif",
     image_alt = "Animated map of ",
     twitter_card_type = "summary_large_image",
-    twitter_creator = "@DrMichaelHarper")
+    twitter_creator = "@DrMichaelHarper", 
+    og_type = "website", 
+    og_locale = "en_UK", 
+    og_site_name = "COVID-19 Visualisation", 
+    og_author = "Michael Harper")
 
-# could use ?meta to insert
-# htmltools::tags$meta(twitter = "grrrck")
-
-cat(glue::glue('
-<meta property="og:site_name" content="COVID-19 Visualisation" />
-<meta property="og:title" content="Homepage" />
-<meta property="og:type" content="website" />
-<meta property="og:description" content="Up to date data visualisations of the COVID-19 pandemic" />
-<meta property="og:url" content="www.coviz.info" />
-<meta property="og:image" content="https://www.coviz.info/resources/animatedMap.gif" />'))
-
+# Add additional opengraph specs
+openGraph <- list(
+  htmltools::tags$meta(property = "og:site_name", content = "COVID-19 Visualisation"),
+  htmltools::tags$meta(property = "og:title", content = rmarkdown::metadata$title),
+  htmltools::tags$meta(property = "og:type", content = "website"),
+  htmltools::tags$meta(property = "article:modified_time", content = Sys.Date()),
+  htmltools::tags$meta(property = "og:description", content = "Up to date data visualisations of the COVID-19 pandemic"),
+  htmltools::tags$meta(property = "og:url", content = "www.coviz.info"),
+  htmltools::tags$meta(property = "og:image", content = "https://www.coviz.info/resources/animatedMap.gif")
+)
+as_meta(openGraph)
 ```
 
 
