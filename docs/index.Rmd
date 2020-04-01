@@ -23,13 +23,17 @@ meta() %>%
     twitter_card_type = "summary_large_image",
     twitter_creator = "@DrMichaelHarper")
 
+# could use ?meta to insert
+# htmltools::tags$meta(twitter = "grrrck")
+
 cat(glue::glue('
-<meta property="og:title" content="The Rock" />
-<meta property="og:type" content="video.movie" />
-<meta property="og:description" content="A summary of the webpage" />
-<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
-<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
-<meta property="og:image" content="https://i.imgur.com/2P6YDHP.jpeg" />'))
+<meta property="og:site_name" content="COVID-19 Visualisation" />
+<meta property="og:title" content="Homepage" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="Up to date data visualisations of the COVID-19 pandemic" />
+<meta property="og:url" content="www.coviz.info" />
+<meta property="og:image" content="https://www.coviz.info/resources/animatedMap.gif" />'))
+
 ```
 
 
