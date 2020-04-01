@@ -20,12 +20,16 @@ meta() %>%
     url = "www.coviz.info",
     image = "https://www.coviz.info/resources/animatedMap.gif",
     image_alt = "Animated map of ",
-    og_type = "website",
-    og_author = c("Michael Harper"),
-    twitter_card_type = "summary",
+    twitter_card_type = "summary_large_image",
     twitter_creator = "@DrMichaelHarper")
 
-cat('<meta property="og:image" content="https://i.imgur.com/2P6YDHP.jpeg" />')
+cat(glue::glue('
+<meta property="og:title" content="The Rock" />
+<meta property="og:type" content="video.movie" />
+<meta property="og:description" content="A summary of the webpage" />
+<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
+<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />
+<meta property="og:image" content="https://i.imgur.com/2P6YDHP.jpeg" />'))
 ```
 
 
