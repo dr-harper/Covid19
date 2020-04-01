@@ -8,6 +8,27 @@ knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 ```
 
 ```{r}
+library(metathis)
+meta() %>%
+  meta_description(
+    "This book will teach you how to do data science with R..."
+  ) %>% 
+  meta_name() %>% 
+  meta_viewport() %>% 
+  meta_social(
+    title = "COVID-19 Data Visualisations",
+    url = "www.coviz.info",
+    image = "resources/animatedMap.gif",
+    image_alt = "Animated map of ",
+    og_type = "website",
+    og_author = c("Michael Harper"),
+    twitter_card_type = "summary",
+    twitter_creator = "@DrMichaelHarper"
+  )
+```
+
+
+```{r}
 knitr::include_graphics("resources/animatedMap.gif")
 ```
 
@@ -17,7 +38,7 @@ A global summary is provided below. This provides key metrics for the overall ou
 
 <button type="button" class="btn btn-primary">[Global Summary](summary)</button>
 
-```{r, out.width= "50%"}
+```{r, out.width= "50%", eval = F}
 knitr::include_graphics("summary_files/figure-html/unnamed-chunk-7-1.png")
 knitr::include_graphics("summary_files/figure-html/unnamed-chunk-4-1.png")
 ```
