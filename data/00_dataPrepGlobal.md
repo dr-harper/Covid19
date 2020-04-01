@@ -21,14 +21,14 @@ library(readr)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✓ ggplot2 3.3.0.9000     ✓ purrr   0.3.3     
     ## ✓ tibble  2.1.3          ✓ dplyr   0.8.5     
-    ## ✓ tidyr   0.8.3          ✓ stringr 1.4.0     
+    ## ✓ tidyr   1.0.2          ✓ stringr 1.4.0     
     ## ✓ ggplot2 3.3.0.9000     ✓ forcats 0.4.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -319,21 +319,21 @@ sessionInfo()
     ## 
     ## other attached packages:
     ##  [1] sf_0.8-0           forcats_0.4.0      stringr_1.4.0      dplyr_0.8.5       
-    ##  [5] purrr_0.3.3        tidyr_0.8.3        tibble_2.1.3       ggplot2_3.3.0.9000
+    ##  [5] purrr_0.3.3        tidyr_1.0.2        tibble_2.1.3       ggplot2_3.3.0.9000
     ##  [9] tidyverse_1.2.1    readr_1.3.1       
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] tidyselect_1.0.0   xfun_0.12          haven_2.1.0        lattice_0.20-38   
-    ##  [5] vctrs_0.2.4        colorspace_1.4-1   generics_0.0.2     htmltools_0.4.0   
+    ##  [5] colorspace_1.4-1   vctrs_0.2.4        generics_0.0.2     htmltools_0.4.0   
     ##  [9] yaml_2.2.1         rlang_0.4.5        e1071_1.7-3        pillar_1.4.3      
     ## [13] glue_1.3.2         withr_2.1.2        DBI_1.1.0          spDataLarge_0.3.1 
     ## [17] modelr_0.1.4       readxl_1.3.1       lifecycle_0.2.0    munsell_0.5.0     
-    ## [21] gtable_0.3.0       cellranger_1.1.0   rvest_0.3.4        evaluate_0.14     
+    ## [21] gtable_0.3.0       cellranger_1.1.0   rvest_0.3.5        evaluate_0.14     
     ## [25] knitr_1.28         curl_4.3           class_7.3-15       fansi_0.4.1       
     ## [29] broom_0.5.2        Rcpp_1.0.4         KernSmooth_2.23-15 scales_1.1.0      
     ## [33] backports_1.1.5    classInt_0.4-2     jsonlite_1.6.1     hms_0.4.2         
     ## [37] digest_0.6.25      stringi_1.4.6      grid_3.6.0         cli_2.0.2         
     ## [41] tools_3.6.0        magrittr_1.5       crayon_1.3.4       pkgconfig_2.0.3   
-    ## [45] xml2_1.2.5         spData_0.3.2       lubridate_1.7.4    assertthat_0.2.1  
-    ## [49] rmarkdown_2.1      httr_1.4.1         rstudioapi_0.11    R6_2.4.1          
-    ## [53] units_0.6-5        nlme_3.1-140       compiler_3.6.0
+    ## [45] ellipsis_0.3.0     xml2_1.2.5         spData_0.3.2       lubridate_1.7.4   
+    ## [49] assertthat_0.2.1   rmarkdown_2.1      httr_1.4.1         rstudioapi_0.11   
+    ## [53] R6_2.4.1           units_0.6-5        nlme_3.1-140       compiler_3.6.0
