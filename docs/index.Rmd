@@ -11,20 +11,19 @@ knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 library(metathis)
 meta() %>%
   meta_description(
-    "This book will teach you how to do data science with R..."
+    "Up to date data visualisations of the COVID-19 pandemic"
   ) %>% 
   meta_name() %>% 
   meta_viewport() %>% 
   meta_social(
     title = "COVID-19 Data Visualisations",
     url = "www.coviz.info",
-    image = "resources/animatedMap.gif",
+    image = "https://www.coviz.info/resources/animatedMap.gif",
     image_alt = "Animated map of ",
     og_type = "website",
     og_author = c("Michael Harper"),
     twitter_card_type = "summary",
-    twitter_creator = "@DrMichaelHarper"
-  )
+    twitter_creator = "@DrMichaelHarper")
 ```
 
 
