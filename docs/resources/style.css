@@ -1,5 +1,11 @@
 body {
   background-color: #ffffff;
+  font-size: 18px;
+  }
+
+.h1.title {
+  font-size: 38px;
+  color: DarkRed;
 }
 
 .fluid-row {

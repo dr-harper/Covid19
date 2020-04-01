@@ -19,7 +19,7 @@ meta() %>%
     title = "COVID-19 Data Visualisations",
     url = "www.coviz.info",
     image = "https://www.coviz.info/resources/animatedMap.gif",
-    image_alt = "Animated map of ",
+    image_alt = "Animated map of the world COVID-19",
     twitter_card_type = "summary_large_image",
     twitter_creator = "@DrMichaelHarper", 
     og_type = "website", 

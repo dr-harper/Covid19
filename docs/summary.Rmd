@@ -1,6 +1,6 @@
 ---
 title: "Global Perspective Daily Update"
-date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+date: "Updated Daily. Last updated: `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 ```{r setup, include=F}
@@ -56,9 +56,7 @@ world_map <- loadWorldMap()
 
 ```
 
-This page provides daily updates for the latest on the Covid-19 outbreak, and not only aims to display the results, but explain the context in which they should be read. Hopefully, it should provide you with the necessary understanding in a way which is makes it clear to see the trends and direction of the outbreak.
-
-This web page will update daily at approximately 12pm GMT. Bookmark it for the latest statistics.
+This page provides daily updates for the latest on the Covid-19 outbreak, and not only aims to **display** the results, but more importantly, **explain** the context in which they should be read. This should provide you with the necessary understanding in a way which is makes it clear to see the trends and direction of the outbreak, and be informed to understand the media.
 
 ## Headline Metrics
 
@@ -75,6 +73,13 @@ deaths <-
   df_summary %>%
   filter(date == max(date)) %>%
   filter(type == "deaths") %>%
+  pull(sum)
+
+# Calculate metrics
+recovered <-
+  df_summary %>%
+  filter(date == max(date)) %>%
+  filter(type == "recovered") %>%
   pull(sum)
 
 deaths_7_days_ago <- 
@@ -111,12 +116,13 @@ fluidRow(
       fill = TRUE
     ),
     infoBox(
-      "Increase in cases", increasePercentageCases, icon = icon("line-chart"),  subtitle = "Change in cases in last 7 days", color = "purple"
+      "Recovered", recovered, icon = icon("hospital"), color = "green",
+      fill = TRUE
     )
 )
 ```
 
-Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a logarithmic scale: this is much more useful than a linear plot. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
+Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a **logarithmic scale**: this is much more useful than a linear plot and fortunately are being increasingly used to display the statistics of the outbreak.. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
 
 ```{block2, type = "rmdimportant", echo = T}
 Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, in particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
@@ -138,8 +144,10 @@ p1 <- ggplot(df_summary, aes(x = date, y = sum, colour = type)) +
        x = "Date",
        caption = caption) +
   theme(legend.position = "right",
+        panel.grid.minor.y = element_line(linetype = "solid", colour = "grey90", size = 0.1),
         plot.caption = element_text(size = rel(0.7))) +
-  scale_y_log10()
+  scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:10) *10000, c(1:10) *100000),
+                breaks = c(100, 1000, 10000, 100000, 1000000))
 p1
 ```
 
@@ -161,9 +169,9 @@ p2 <- ggplot(df_summary, aes(x = date, y = sum, colour = type)) +
 p2
 ```
 
-## Numbers of Deaths Daily
+## Daily Deaths
 
-The numbers of deaths give a more consistent comparison of statistics.
+The numbers of deaths give a more consistent comparison of statistics if we are trying to understand differences internationally. Although Asia had is where the outbreak started, Europe has quickly become the epicentre of the crisis. North America is starting to show a growth in cases.
 
 ```{r dailyDeaths, fig.height=3, fig.width=6, fig.cap = "Barplot showing the numbers of daily deaths"}
 df_sum_continent <- 
@@ -182,12 +190,12 @@ p2 <- ggplot(df_sum_continent, aes(x = date, y = changeDaily, fill = continent))
   scale_y_continuous(expand = c(0,0)) + 
   theme(panel.grid.major.x = element_blank(),
         legend.background = element_blank(),
-        legend.position = "bottom")  
+        legend.position = "bottom") 
 
 p2
 ```
 
-
+Comparing deaths does have it flaws. Firstly, it can obscure the scale of the problem, as only a small but significant proportion of people die, with the odds of survival being greatly increased if they have access to health care. Secondly, deaths lag behind the levels of infections, with the average time between first symptons and death being 2 weeks. We therefore essentially give us a snapshot of what the levels of infection was 2 weeks ago, and as this week has made perfectly clear, the landscape at the moment can change almost daily. Any time government policy change, it will be two weeks until they can expect to see a change in the trajectory of deaths.
 
 ```{r}
 df_sum_continent <- 
@@ -206,9 +214,9 @@ df_sum_continent <-
 
 # Growth (logarithmic)
 
-Logarithmic graphs are much better for visualising the growth of Covid-19. They enable us to 
+Using the logarithmic growth curves from above, we can explore in more details the rates of change for deaths. Many countries have been following the same trajectory as Italy. The important thing that countries will want to see is a flattening of these curves as social distancing measures have an impact.
 
-```{r fig.height=6, fig.width=8}
+```{r plotLogarithmic, fig.height=6, fig.width=8}
 # Define the colour palette for the plot
 set_swatch(c(
   "#785d37",
@@ -293,18 +301,63 @@ deathsToday <-
   filter(value > 0)
 
 # Make colour scale
-labels <- c("0 - 10", "10 - 100", "100-500", "500-1000", "1000+")
-deathsToday$cut <- cut(deathsToday$value, c(0,10,100,500,1000,Inf), labels = labels)
+labels <- c("0 - 100", "100 - 1000", "1000-5000", "5000-10000", "10000+")
+deathsToday$cut <- cut(deathsToday$value, c(0,100,1000,5000,10000,Inf), labels = labels)
 
 ```
 
+```{block2, type = "rmdtip", echo = TRUE}
+Interested in getting detailed statistics for your country? Why don't you check out our custom statistics within the [countries](countries) tab.
+```
 
+Figure \@ref(fig:growthTrajectory) shows that many countries are following the same trajectory of Italy, often seen as one of the main region to encounter COVID-19 issues.
+
+```{r growthTrajectory, fig.height=10, fig.width=12, fig.cap = "Rate of Death trajectory for countries with more than 200 cases of COVID-19"}
+
+df_plot1 <-
+  df_all %>%
+  filter(type == "cases") %>%
+  filter(daysSince200Outbreak > 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince200Outbreak)) %>%
+  ungroup() %>%
+  filter(numdaysMax > 5)
+
+df2_plot1 <- df_plot1 %>%
+  rename("area" = "region")
+
+df3_plot1 <- df_plot1 %>%
+  group_by(region) %>%
+  filter(date == max(date))
+
+ggplot(df_plot1) +
+  geom_line(data = df2_plot1, aes(x = daysSince200Outbreak, y = value, group = area), colour = "grey80") +
+  geom_line(aes(x = daysSince200Outbreak, y = value, group = region), colour = "#3a6589") +
+  geom_point(data = df3_plot1, aes(x = daysSince200Outbreak, y = value, group = region), colour = "#3a6589") +
+  labs(
+    x = "Days Since 200th Case",
+    y = "Number of Reported Cases",
+    title = "Outbreaks are now underway in many countries, with some at similar trajectories as Italy",
+    subtitle = "Cumulative number of confirmed cases, by number of days since 100th case",
+    caption = caption) +
+  scale_y_log10(limits = c(200, 100000),
+                breaks = c(200, 1000, 10000, 100000),
+                labels = function(x) format(x, scientific = FALSE),
+                expand = c(0,0)) +
+  scale_x_continuous(limits = c(0, 30), expand = c(0,0)) +
+  facet_wrap(region ~ ., ncol = 12, shrink = FALSE) +
+  theme(
+    aspect.ratio = 1,
+    panel.grid = element_blank()
+  )
+```
 
 ## Global Maps {.tabset}
 
 ### Interactive
 
-```{r}
+```{r mapInteractive}
 df_all_2 <- st_as_sf(df_all)
 
 deathsToday_2 <- 
@@ -356,7 +409,7 @@ gg_2 %>%
 
 ### Static Map
 
-```{r, fig.width=8, fig.height=4.32}
+```{r mapStatic, fig.width=8, fig.height=4.32}
 # Globabl
 p1 <-
   ggplot() +
@@ -383,9 +436,9 @@ p1
 
 ## Biggest Outbreaks
 
-Although the outbreak started mostly within Asia, there has been a shift in the hotspot to Europe
+Although the outbreak started mostly within Asia, there has been a shift in the hotspot to Europe. These are shown below in \@ref(fig:deathRates).
 
-```{r, fig.height=6, fig.width=9, fig.cap = "A summary of deaths per country"}
+```{r deathRates, fig.height=6, fig.width=9, fig.cap = "A summary of deaths per country"}
 p2 <- 
   deathsToday %>%
   top_n(n = 10, wt = value) %>%
@@ -423,13 +476,11 @@ p2 + p3 + plot_layout(ncol = 1)
 
 # Assessing the Case Fatality
 
-There is still a lot of uncertainty around how the proportion of deaths caused by COVID-19. This is represented by the **Case Fatality Rate**. During an outbreak of a pandemic the CFR is a poor measure of the mortality risk of the disease. 
-
-Firstly, there is a limited understanding of how many people have actually been tested, and many countries have only been testing those which are exhibiting symptons of the virus. 
-
-As noted in the [Lancet](https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(20)30244-9/fulltext?rss=yes)
+There is still a lot of uncertainty around how the proportion of deaths caused by COVID-19. This is represented by the **Case Fatality Rate**. During an outbreak of a pandemic the CFR is a poor measure of the mortality risk of the disease.  Firstly, there is a limited understanding of how many people have actually been tested, and many countries have only been testing those which are exhibiting symptons of the virus. As noted in the [Lancet](https://www.thelancet.com/journals/laninf/article/PIIS1473-3099(20)30244-9/fulltext?rss=yes)
 
 >  The virus and its clinical course are new, and we still have little information about them. Health care capacity and capability factors, including the availability of health-care workers, resources, facilities, and preparedness, also affect outcomes.
+
+Figure \@ref(fig:plotCFR)  shows the trajectory of the CFR for some of the key countries. It can be seen how the CFR has been trending upwards in many countries. This is not to suggest that the virus is becoming any more lethal, but instead to indicate that the testing regime is resulting in fewer people being tested.
 
 ```{r plotCFR, fig.cap = "Case Fatality Rate of the ongoing COVID-19 Pandemic"}
 
@@ -466,12 +517,12 @@ ggplot(df_cfr, aes(date, cfr, group = region, colour = region)) +
                    expand = c(0,0), breaks = "2 week", date_labels = " %d %B")
 ```
 
+It has been noted [in this study](https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/) that the current COVID outbreak seems to be following previous pandemics: initial CFRs start high and tend and trend downwards. Estimates are placing the current CFR around COVID-19 IFR lies somewhere between 0.1% and 0.26%.
 
-It has been noted [in this study](https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/) that the current COVID outbreak seems to be following previous pandemics: initial CFRs start high and tend and trend downwards. Estimates are placing the current CFR around COVID-19 IFR lies somewhere between 0.1% and 0.26%.*
+Figure \@ref(fig:plotCountries) provides the case fatality ratio for each country. For more detail on each countries trajectory, you can check the detailed reports available for each [country](country]. More information on CFRs is provided at https://ourworldindata.org/coronavirus
 
-The plot below provides the case fatality ratio for each country. For more detail on each countries trajectory, you can check the detailed reports available for each country (COMING SOON).
 
-```{r}
+```{r plotCountries, fig.cap = "CFR for countires with more than 100 cases"}
 df_cfr_today <- 
   df_all %>%
   st_drop_geometry() %>%
@@ -507,17 +558,45 @@ ggplotly(plot_3)
 
 ```
 
-```{r}
 
+```{r results="asis"}
+# Make metadata
+
+library(metathis)
+meta() %>%
+  meta_description(
+    "Daily Updating Summary of the COVID-19 Outbreak"
+  ) %>% 
+  meta_name() %>% 
+  meta_viewport() %>% 
+  meta_social(
+    title = "COVID-19 Data Visualisations",
+    url = "www.coviz.info",
+    image = "https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true",
+    image_alt = "Growth Rates of COVID-19",
+    twitter_card_type = "summary_large_image",
+    twitter_creator = "@DrMichaelHarper", 
+    og_type = "website", 
+    og_locale = "en_UK", 
+    og_site_name = "COVID-19 Visualisation", 
+    og_author = "Michael Harper")
+
+# Add additional opengraph specs
+openGraph <- list(
+  htmltools::tags$meta(property = "og:site_name", content = "COVID-19 Visualisation"),
+  htmltools::tags$meta(property = "og:title", content = rmarkdown::metadata$title),
+  htmltools::tags$meta(property = "og:type", content = "website"),
+  htmltools::tags$meta(property = "article:modified_time", content = Sys.Date()),
+  htmltools::tags$meta(property = "og:description", content = "Up to date data visualisations of the COVID-19 pandemic"),
+  htmltools::tags$meta(property = "og:url", content = "www.coviz.info"),
+  htmltools::tags$meta(property = "og:image", content = "https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true")
+)
+as_meta(openGraph)
 ```
 
+# Feedback and Support
 
+Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](paypal.me/mikeyharper) to support this effort.
 
-
-Read more on the influences of Case Fatality Rate: https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/
-
-# Additional Reading
-
-https://ourworldindata.org/coronavirus
-
+<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 10px 7px 10px !important;line-height: 35px !important;height:51px !important;min-width:217px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#79D6B5 !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 10px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/BXFAIV5"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a>
 
