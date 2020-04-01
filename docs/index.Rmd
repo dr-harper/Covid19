@@ -7,7 +7,7 @@ title: "Coronavirus Data Visualisation"
 knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 ```
 
-```{r}
+```{r results="asis"}
 library(metathis)
 meta() %>%
   meta_description(
@@ -24,6 +24,8 @@ meta() %>%
     og_author = c("Michael Harper"),
     twitter_card_type = "summary",
     twitter_creator = "@DrMichaelHarper")
+
+cat('<meta property="og:image" content="https://i.imgur.com/2P6YDHP.jpeg" />')
 ```
 
 
