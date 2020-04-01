@@ -1,0 +1,9 @@
+bookdown::html_document2:
+    number_sections: FALSE
+    self_contained: FALSE
+    lib_dir: libs
+    theme: flatly
+    css: resources/style.css
+    includes:
+      in_header: resources/header.html
+      after_body: resources/footer.html

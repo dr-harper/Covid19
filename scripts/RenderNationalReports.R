@@ -10,7 +10,7 @@ for(i in c(countries_list[1])){
 
   filename <- glue::glue("docs/countries/{region}.html", region = i)
 
-  rmarkdown::render(input = here("reports/national/nationalReportTemplate.Rmd"),
+  rmarkdown::render(input = here("docs/countries/nationalReportTemplate.Rmd"),
                     output_file =  here(filename),
                     params = list(country = i))
 
@@ -24,3 +24,8 @@ rmarkdown::render(global,
 
 
 siteFiles <- list.files(here("docs"), pattern = ".Rmd")
+
+for(i in siteFiles){
+
+  rmarkdown::render(input = file.path("docs", i))
+}

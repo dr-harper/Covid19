@@ -124,10 +124,6 @@ fluidRow(
 
 Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a **logarithmic scale**: this is much more useful than a linear plot and fortunately are being increasingly used to display the statistics of the outbreak.. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
 
-```{block2, type = "rmdimportant", echo = T}
-Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, in particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
-```
-
 ##  {.tabset}
 
 ### Logarithmic
@@ -172,6 +168,10 @@ p2
 ## Daily Deaths
 
 The numbers of deaths give a more consistent comparison of statistics if we are trying to understand differences internationally. Although Asia had is where the outbreak started, Europe has quickly become the epicentre of the crisis. North America is starting to show a growth in cases.
+
+```{block2, type = "rmdimportant", echo = T}
+Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus, in particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
+```
 
 ```{r dailyDeaths, fig.height=3, fig.width=6, fig.cap = "Barplot showing the numbers of daily deaths"}
 df_sum_continent <- 
@@ -596,7 +596,7 @@ as_meta(openGraph)
 
 # Feedback and Support
 
-Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](paypal.me/mikeyharper) to support this effort.
+Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](https://www.paypal.me/mikeyharper) to support this effort.
 
 <style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 10px 7px 10px !important;line-height: 35px !important;height:51px !important;min-width:217px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#79D6B5 !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 10px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/BXFAIV5"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a>
 

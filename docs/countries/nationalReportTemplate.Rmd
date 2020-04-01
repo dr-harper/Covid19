@@ -1,0 +1,292 @@
+---
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
+params:
+  country: Afghanistan
+title: "`r glue::glue('{country} COVID-19 Statistics', country = params$country)`"
+---
+
+```{r setup, include=F}
+# Set R Markdown Options
+knitr::opts_chunk$set(echo = F, 
+                      message = F, 
+                      warning = F,
+                      echo = FALSE,
+                      fig.align = "center",
+                      out.width = "100%")
+
+# Avoid numbers being rounded
+options(scipen = 999)
+
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+library(plotly)
+library(emojifont)
+
+library(shiny)
+library(shinydashboard)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light", type = 'inner')
+
+# Load functions stored in functions file
+files.sources = list.files(here::here("functions"))
+invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
+
+# Setup captions
+caption <- glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
+
+current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
+
+# Setup Text
+df <- readr::read_csv(here::here("data/global/covid_data_global.csv"),
+                      col_types = readr::cols()) %>%
+  mutate(continent = factor(continent, levels = rev(c("Asia", "Europe", "North America", "South America", "Africa", "Oceania"))))
+
+df_all <- loadData(spatial = T)
+world_map <- loadWorldMap()
+
+```
+
+```{r}
+df_country <- df_all %>%
+  filter(region == params$country)
+
+# Calculate metrics
+deaths <-
+  df_country %>%
+  filter(date == max(date)) %>%
+  filter(type == "deaths") %>%
+  pull(value)
+
+deaths_7_days_ago <- 
+  df_country %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "deaths") %>%
+  pull(value)
+
+# Calculate metrics
+recovered <-
+  df_country %>%
+  filter(date == max(date)) %>%
+  filter(type == "recovered") %>%
+  pull(value)
+
+cases <- 
+  df_country %>%
+  filter(date == max(date)) %>%
+  filter(type == "cases") %>%
+  pull(value)
+
+cases_7_days_ago <-
+  df_country %>%
+  filter(date == max(df$date) - lubridate::ddays(7)) %>%
+  filter(type == "cases") %>%
+  pull(value)
+
+
+increasePercentageCases <- scales::percent(cases/cases_7_days_ago)
+increasePercentageDeaths <- scales::percent(deaths/deaths_7_days_ago)
+```
+
+```{block2, type = "rmdimportant", echo = T}
+Note, the country statistics are in beta development. More features will be added over the coming week. Make sure to check back for more details and statistics
+```
+
+There are **`r cases`** recorded cases and **`r deaths`** recorded deaths. In the past 7 days, this has increase by **`r increasePercentageCases`** and **`r increasePercentageDeaths`** respectively. 
+
+```{r}
+fluidRow(
+    infoBox(
+      "Confirmed Cases", cases, icon = icon("users"), color = "blue", fill = TRUE
+    ),
+    infoBox(
+      "Deaths", deaths, icon = icon("users"), color = "red",
+      fill = TRUE
+    ),
+    infoBox(
+      "Recovered", recovered, icon = icon("hospital"), color = "green",
+      fill = TRUE
+    )
+)
+```
+
+```{block2, type = "rmdimportant", echo = T}
+Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus. In particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
+```
+
+##  {.tabset}
+
+### Logarithmic
+
+```{r plotCumulativeCasesandDeaths, fig.cap = "Cumulative number of cases"}
+p1 <- 
+    df_country %>%
+  filter(type != "recovered") %>%
+  ggplot(aes(x = date, y = value, colour = type)) +
+  geom_line() +
+  geom_point(aes(text = paste0(stringr::str_to_title(type), ": ", value))) +
+  labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
+       subtitle = glue::glue("Logarithmic scale enables us to understand the exponential growth better
+                             Data accurate as of {date}", date = max(df_country$date)),
+       colour = "Type",
+       y = "Count",
+       x = "Date",
+       caption = caption) +
+  theme(legend.position = "right",
+        panel.grid.minor.y = element_line(linetype = "solid", colour = "grey90", size = 0.1),
+        plot.caption = element_text(size = rel(0.7))) +
+  scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:10) *10000, c(1:10) *100000),
+                breaks = c(100, 1000, 10000, 100000, 1000000))
+p1
+```
+
+### Linear
+
+```{r plotCumulativeLinear, fig.cap = "Cumulative number of cases"}
+p2 <- ggplot(df_country, aes(x = date, y = value, colour = type)) +
+  geom_line() +
+  labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
+       subtitle = glue::glue("Linear plots make it hard to visualise whether the exponential growth is being controlled
+                             Data accurate as of {date}", date = max(df_country$date)),
+       colour = "Type",
+       y = "Count",
+       x = "Date",
+       caption = caption) +
+  theme(legend.position = "right",
+        plot.caption = element_text(size = rel(0.7)))
+p2
+```
+
+
+```{r}
+p2 <- 
+  df_country %>%
+  filter(type != "recovered") %>%
+  ggplot(aes(x = date, y = value, colour = type)) +
+  geom_line() +
+  labs(title = glue::glue("Cumulative Cases and Deaths for {country}", country = params$country),
+       subtitle = glue::glue("Total number of confirmed cases: {cases}
+       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
+  theme(legend.position = "right",
+        panel.grid.minor = element_line(linetype = "dashed", colour = "grey90", size = 0.4),
+        panel.grid.major = element_line(linetype = "solid", colour = "grey90")) +
+  scale_y_log10(minor_breaks = c(c(1:9), c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000))
+p2
+```
+
+```{r fig.height=4, fig.width=6}
+
+# Only show since 200th outbreak
+df_country_bar <- df_country %>%
+  filter(daysSince200Outbreak > 0)
+
+if(nrow(df_country_bar) > 0){
+  
+  p2 <- ggplot(df_country_bar) + 
+  geom_col(aes(x = date, y = changeDaily, fill = type), colour = "grey90") +
+  labs(title = "Daily number of recorded cases and deaths",
+       y = "Number",
+       x = "Date",
+       subtitle = glue::glue("Total number of confirmed cases: {cases}
+       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
+  facet_grid(type~., scales = "free_y", labeller = labeller(type = function(x) tools::toTitleCase(x))) +
+  scale_y_continuous(expand = c(0.1,0.1)) + 
+  theme(panel.grid.major.x = element_blank(),
+        legend.background = element_blank(),
+        legend.position = "none")
+
+p2
+  
+}
+
+
+```
+
+```{block2, type = "rmdinfo", echo = T}
+More charts will be added in the next few days. Make sure to check back for updates.
+```
+
+# Data
+
+This analysis is largely based on the John Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.
+
+```{r results="asis"}
+# Make metadata
+
+library(metathis)
+meta() %>%
+  meta_description(
+    "Daily Updating Summary of the COVID-19 Outbreak"
+  ) %>% 
+  meta_name() %>% 
+  meta_viewport() %>% 
+  meta_social(
+    title = glue::glue("COVID-19 Data Visualisations for {country}", country = params$country),
+    url = "www.coviz.info",
+    image = "https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true",
+    image_alt = "Growth Rates of COVID-19",
+    twitter_card_type = "summary_large_image",
+    twitter_creator = "@DrMichaelHarper", 
+    og_type = "website", 
+    og_locale = "en_UK", 
+    og_site_name = "COVID-19 Visualisation", 
+    og_author = "Michael Harper")
+
+# Add additional opengraph specs
+openGraph <- list(
+  htmltools::tags$meta(property = "og:site_name", content = "COVID-19 Visualisation"),
+  htmltools::tags$meta(property = "og:title", content = glue::glue("COVID-19 Data Visualisations for {country}", country = params$country)),
+  htmltools::tags$meta(property = "og:type", content = "website"),
+  htmltools::tags$meta(property = "article:modified_time", content = Sys.Date()),
+  htmltools::tags$meta(property = "og:description", content = "Up to date data visualisations of the COVID-19 pandemic"),
+  htmltools::tags$meta(property = "og:url", content = "www.coviz.info"),
+  htmltools::tags$meta(property = "og:image", content = "https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true")
+)
+as_meta(openGraph)
+```
+
+# Feedback and Support
+
+Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](https://www.paypal.me/mikeyharper) to support this effort.
+
+<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 10px 7px 10px !important;line-height: 35px !important;height:51px !important;min-width:217px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#79D6B5 !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 10px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/BXFAIV5"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a>
+
+
+# Comments
+
+<script id="dsq-count-scr" src="//coviz-info.disqus.com/count.js" async></script>
+
+<div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://coviz-info.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                            
+
+
