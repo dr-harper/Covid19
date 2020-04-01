@@ -6,7 +6,7 @@ countries_list <- unique(countries$region)
 
 library(rmarkdown)
 
-for(i in c(countries_list[1])){
+for(i in c(countries_list)){
 
   filename <- glue::glue("docs/countries/{region}.html", region = i)
 
