@@ -17,12 +17,6 @@ for(i in c(countries_list)){
 }
 
 
-global <- here("reports/global/dailyOverview.Rmd")
-
-rmarkdown::render(global,
-                  output_file = here("docs/summary.html"))
-
-
 siteFiles <- list.files(here("docs"), pattern = ".Rmd")
 
 for(i in siteFiles){

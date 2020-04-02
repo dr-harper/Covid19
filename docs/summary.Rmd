@@ -519,8 +519,7 @@ ggplot(df_cfr, aes(date, cfr, group = region, colour = region)) +
 
 It has been noted [in this study](https://www.cebm.net/covid-19/global-covid-19-case-fatality-rates/) that the current COVID outbreak seems to be following previous pandemics: initial CFRs start high and tend and trend downwards. Estimates are placing the current CFR around COVID-19 IFR lies somewhere between 0.1% and 0.26%.
 
-Figure \@ref(fig:plotCountries) provides the case fatality ratio for each country. For more detail on each countries trajectory, you can check the detailed reports available for each [country](country]. More information on CFRs is provided at https://ourworldindata.org/coronavirus
-
+Figure \@ref(fig:plotCountries) provides the case fatality ratio for each country. For more detail on each countries trajectory, you can check the detailed reports available for each [country](country). More information on CFRs is provided at [Our World In Data](https://ourworldindata.org/coronavirus).
 
 ```{r plotCountries, fig.cap = "CFR for countires with more than 100 cases"}
 df_cfr_today <- 
@@ -555,7 +554,6 @@ plot_3 <- ggplot(df_cfr_today, aes(x = cases, y = cfr, group = region)) +
        y = "CFR")
 
 ggplotly(plot_3)
-
 ```
 
 

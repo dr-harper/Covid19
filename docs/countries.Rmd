@@ -3,7 +3,83 @@ title: Country Index
 ---
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
+# Set R Markdown Options
+knitr::opts_chunk$set(echo = F, 
+                      message = F, 
+                      warning = F,
+                      echo = FALSE,
+                      fig.align = "center",
+                      out.width = "100%")
+
+# Avoid numbers being rounded
+options(scipen = 999)
+
+# Laod packages
+library(here)
+library(readr)
+library(tidyverse)
+library(sf)
+library(maps)
+library(gganimate)
+library(patchwork)
+library(ggthemr)
+library(grid)
+library(magick)
+library(plotly)
+library(emojifont)
+
+library(shiny)
+library(shinydashboard)
+
+# devtools::install_github('cttobin/ggthemr')
+ggthemr("light", type = 'inner')
+
+# Load functions stored in functions file
+files.sources = list.files(here::here("functions"))
+invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
+
+# Setup captions
+caption <- glue::glue("Data Source: John Jopkins University
+                         Data updated on {date}
+                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
+
+current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
+
+# Setup Text
+df <- readr::read_csv(here::here("data/global/covid_data_global.csv"),
+                      col_types = readr::cols()) %>%
+  mutate(continent = factor(continent, levels = rev(c("Asia", "Europe", "North America", "South America", "Africa", "Oceania"))))
+
+df_all <- loadData(spatial = T)
+world_map <- loadWorldMap()
+
+
+# Define the colour palette for the plot
+set_swatch(c(
+  "#785d37",
+  "#62bba5", "#ffb84d",
+  "#aaa488", "#b2432f",
+  "#3a6589", "#9b5672",
+  "#908150", "#373634", 
+  "#569b7f", "#292217"
+))
+```
+
+```{r fig.height=2.5, fig.width=6, paged.print=FALSE}
+ggplot() +
+  geom_sf(data = world_map, fill = "grey95", colour = "grey90") +
+  theme(plot.caption = element_text(size = rel(0.5)),
+        plot.background = element_rect(fill = NA, colour = NA),
+        panel.background = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        axis.title = element_blank(),
+        panel.grid = element_blank(),
+        legend.background = element_blank(),
+        title = element_text(colour = '#706f6f', size = rel(2), hjust = 0.5),
+        plot.title = element_text(colour = '#706f6f', size = rel(1.5), hjust = 0.5),
+        legend.position = "none")
 ```
 
 If you are looking for more detail for an individual country, you can get a detailed report below. These are updated from the latest Johh Hopkins Datase daily:

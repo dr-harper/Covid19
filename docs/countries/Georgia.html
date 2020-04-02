@@ -46,7 +46,7 @@
 <meta property="og:site_name" content="COVID-19 Visualisation"/>
 <meta property="og:title" content="COVID-19 Data Visualisations for Georgia"/>
 <meta property="og:type" content="website"/>
-<meta property="article:modified_time" content="2020-04-02"/>
+<meta property="article:modified_time" content="2020-04-03"/>
 <meta property="og:description" content="Up to date data visualisations of the COVID-19 pandemic"/>
 <meta property="og:url" content="www.coviz.info"/>
 <meta property="og:image" content="https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true"/>
@@ -251,17 +251,13 @@ summary {
 
 
 <h1 class="title toc-ignore">Georgia COVID-19 Statistics</h1>
-<h4 class="date">Last updated: 02 April, 2020</h4>
+<h4 class="date">Last updated: 03 April, 2020</h4>
 
 </div>
 
 
-
-<div class="rmdimportant">
-Note, the country statistics are in beta development. More features will be added over the coming week. Make sure to check back for more details and statistics
-</div>
-
-<p>There are <strong>117</strong> recorded cases and <strong>0</strong> recorded deaths. In the past 7 days, this has increase by <strong>156%</strong> and <strong>NA</strong> respectively.</p>
+<p><img src="Georgia_files/figure-html/unnamed-chunk-1-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>This web page provides daily updating statistics for the COVID-19 pandemic. As of 03 April, 2020, the Georgia has <strong>117</strong> recorded cases and <strong>0</strong> recorded deaths. In the past 7 days, this has increase by <strong>156%</strong> and <strong>NA</strong> respectively.</p>
 <div class="row">
 <div class="col-sm-4">
 <div class="info-box bg-blue">
@@ -296,12 +292,19 @@ Note, the country statistics are in beta development. More features will be adde
 </div>
 </div>
 </div>
+<div class="col-sm-4">
+<div class="info-box bg-purple">
+<span class="info-box-icon">
+<i class="fa fa-hospital"></i>
+</span>
+<div class="info-box-content">
+<span class="info-box-text">Number of Deaths Rank Globally</span>
+<span class="info-box-number">131st</span>
 </div>
-
-<div class="rmdimportant">
-Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus. In particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
 </div>
-
+</div>
+</div>
+<p>Figure <a href="#fig:plotCumulativeCasesandDeaths">1</a> shows the global trend in Coronavirus cases. Note it is plotted on a <strong>logarithmic scale</strong>: this is much more useful than a linear plot and fortunately are being increasingly used to display the statistics of the outbreak.. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.</p>
 <div id="section" class="section level2 tabset">
 <h2></h2>
 <div id="logarithmic" class="section level3">
@@ -321,13 +324,23 @@ Figure 1: Cumulative number of cases
 Figure 2: Cumulative number of cases
 </p>
 </div>
-<p><img src="Georgia_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="comparison-against-other-countries" class="section level1">
+<h1>Comparison Against other countries</h1>
+<p>Although cases may be more useful to understand the scale of the outbreak, it can be difficult to compare countries as there are <a href="https://ourworldindata.org/covid-testing">very different testing schemes</a>. The numbers of deaths give a more consistent comparison of statistics if we are trying to understand differences internationally, which are more consistently recorded. Using the deaths, we can understand the rate of spread of the virus, although it should be aware that deaths will typically occur around two weeks after infection. It therefore mean deaths lag behind any changes in public policy, so when governments introduce any measures, there will be a delay in when they see the impact within the data.</p>
+<p><img src="Georgia_files/figure-html/plotLogarithmic-1.png" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="daily-count" class="section level1">
+<h1>Daily Count</h1>
+<p><img src="Georgia_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="Georgia_files/figure-html/plotPercent-1.png" width="100%" style="display: block; margin: auto;" />
+```</p>
 
 <div class="rmdinfo">
 More charts will be added in the next few days. Make sure to check back for updates.
 </div>
 
-</div>
 </div>
 <div id="data" class="section level1">
 <h1>Data</h1>
