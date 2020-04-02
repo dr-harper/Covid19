@@ -214,7 +214,7 @@ df_sum_continent <-
 
 # Growth (logarithmic)
 
-Using the logarithmic growth curves from above, we can explore in more details the rates of change for deaths. Many countries have been following the same trajectory as Italy. The important thing that countries will want to see is a flattening of these curves as social distancing measures have an impact.
+Using the logarithmic growth curves from above, we can explore in more details the rates of change for deaths. Many countries have been following the same trajectory as Italy. The important thing that countries will want to see is a flattening of these curves as social distancing measures have an impact. ^[I was half-way through making this plot when I found out that the [Financial Times](https://www.ft.com/coronavirus-latest) have also made some similar visulisations. I ended up using some of their design elements for inspirations]
 
 ```{r plotLogarithmic, fig.height=6, fig.width=8}
 # Define the colour palette for the plot
@@ -280,7 +280,7 @@ ggplot() +
        fill = "Country",
        title = "COVID-19 related deaths per country",
        subtitle = "UK, Spain and Italy have higher levels of deaths than China at the same stage of the pandemic",
-       caption = caption) +
+       caption = paste0(caption, "\nDesign inspired by Financial Times")) +
   scale_y_log10(expand = c(0, 0),  minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000)) +
   scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35)) +
   coord_cartesian(xlim = c(0, 40), ylim = c(10, 50000)) +
