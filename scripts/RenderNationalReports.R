@@ -23,3 +23,7 @@ for(i in siteFiles){
 
   rmarkdown::render(input = file.path("docs", i))
 }
+
+
+list.files(path = "docs/countries/", pattern = ".png", recursive = T) %>%
+  file.remove()
