@@ -19,9 +19,6 @@
 <script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
-<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="libs/navigation-1.1/tabsets.js"></script>
 <link href="libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="libs/highlightjs-9.12.0/highlight.js"></script>
@@ -34,8 +31,6 @@
 
   gtag('config', 'UA-109605445-2');
 </script>
-
-
 
 <div class="container-fluid main-container">
 
@@ -212,69 +207,6 @@ summary {
 
 
 
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
-
-
 
 </head>
 
@@ -282,16 +214,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -319,7 +241,7 @@ div.tocify {
 <p><strong>J</strong> - <a href="countries/Jamaica">Jamaica</a> - <a href="countries/Japan">Japan</a> - <a href="countries/Jordan">Jordan</a></p>
 <p><strong>K</strong> - <a href="countries/Kazakhstan">Kazakhstan</a> - <a href="countries/Kenya">Kenya</a> - <a href="countries/Kosovo">Kosovo</a> - <a href="countries/Kuwait">Kuwait</a> - <a href="countries/Kyrgyzstan">Kyrgyzstan</a></p>
 <p><strong>L</strong> - <a href="countries/Laos">Laos</a> - <a href="countries/Latvia">Latvia</a> - <a href="countries/Lebanon">Lebanon</a> - <a href="countries/Liberia">Liberia</a> - <a href="countries/Libya">Libya</a> - <a href="countries/Liechtenstein">Liechtenstein</a> - <a href="countries/Lithuania">Lithuania</a> - <a href="countries/Luxembourg">Luxembourg</a></p>
-<p><strong>M</strong> - <a href="countries/Madagascar">Madagascar</a> - <a href="countries/Malaysia">Malaysia</a> - <a href="countries/Maldives">Maldives</a> - <a href="countries/Mali">Mali</a> - <a href="countries/Malta">Malta</a> - <a href="countries/Mauritania">Mauritania</a> - <a href="countries/Mauritius">Mauritius</a> - <a href="countries/Mexico">Mexico</a> - <a href="countries/Moldova">Moldova</a> - <a href="countries/Monaco">Monaco</a> - <a href="countries/Mongolia">Mongolia</a> - <a href="countries/Montenegro">Montenegro</a> - <a href="countries/Morocco">Morocco</a> - <a href="countries/Mozambique">Mozambique</a> - <a href="countries/MS%20Zaandam">MS Zaandam</a></p>
+<p><strong>M</strong> - <a href="countries/Madagascar">Madagascar</a> - <a href="countries/Malawi">Malawi</a> - <a href="countries/Malaysia">Malaysia</a> - <a href="countries/Maldives">Maldives</a> - <a href="countries/Mali">Mali</a> - <a href="countries/Malta">Malta</a> - <a href="countries/Mauritania">Mauritania</a> - <a href="countries/Mauritius">Mauritius</a> - <a href="countries/Mexico">Mexico</a> - <a href="countries/Moldova">Moldova</a> - <a href="countries/Monaco">Monaco</a> - <a href="countries/Mongolia">Mongolia</a> - <a href="countries/Montenegro">Montenegro</a> - <a href="countries/Morocco">Morocco</a> - <a href="countries/Mozambique">Mozambique</a> - <a href="countries/MS%20Zaandam">MS Zaandam</a></p>
 <p><strong>N</strong> - <a href="countries/Namibia">Namibia</a> - <a href="countries/Nepal">Nepal</a> - <a href="countries/Netherlands">Netherlands</a> - <a href="countries/New%20Zealand">New Zealand</a> - <a href="countries/Nicaragua">Nicaragua</a> - <a href="countries/Niger">Niger</a> - <a href="countries/Nigeria">Nigeria</a> - <a href="countries/North%20Macedonia">North Macedonia</a> - <a href="countries/Norway">Norway</a></p>
 <p><strong>O</strong> - <a href="countries/Oman">Oman</a></p>
 <p><strong>P</strong> - <a href="countries/Pakistan">Pakistan</a> - <a href="countries/Panama">Panama</a> - <a href="countries/Papua%20New%20Guinea">Papua New Guinea</a> - <a href="countries/Paraguay">Paraguay</a> - <a href="countries/Peru">Peru</a> - <a href="countries/Philippines">Philippines</a> - <a href="countries/Poland">Poland</a> - <a href="countries/Portugal">Portugal</a></p>
@@ -350,8 +272,6 @@ div.tocify {
 &nbsp;
 
 
-</div>
-</div>
 
 </div>
 
@@ -384,32 +304,6 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

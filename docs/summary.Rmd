@@ -41,7 +41,7 @@ files.sources = list.files(here::here("functions"))
 invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 
 # Setup captions
-caption <- glue::glue("Data Source: John Jopkins University
+caption <- glue::glue("Data Source: John Hopkins University
                          Data updated on {date}
                          CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
@@ -299,7 +299,6 @@ ggplot() +
        y = "Cumulative Number of Deaths",
        fill = "Country",
        title = "COVID-19 related deaths per country",
-       subtitle = "UK, Spain and Italy have higher levels of deaths than China at the same stage of the pandemic",
        caption = paste0(caption, "\nDesign inspired by Financial Times")) +
   scale_y_log10(expand = c(0, 0),  minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000)) +
   scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35, 42, 49)) +
@@ -327,7 +326,7 @@ deathsToday$cut <- cut(deathsToday$value, c(0,100,1000,5000,10000,Inf), labels =
 ```
 
 ```{block2, type = "rmdtip", echo = TRUE}
-Interested in getting detailed statistics for your country? Why don't you check out our custom statistics within the [countries](countries) tab.
+Detailed country statistics are available within the [countries](countries) tab.
 ```
 
 Figure \@ref(fig:growthTrajectory) shows that many countries are following the same trajectory of Italy, often seen as one of the main region to encounter COVID-19 issues.
