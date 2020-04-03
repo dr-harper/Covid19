@@ -323,6 +323,7 @@ p2
 
 ```
 
+
 ```{r plotPercent, fig.height=5, fig.width=8}
 
 # Prepare the data
@@ -360,24 +361,26 @@ df2_selectedcountry_plot2 <- df_selectedcountry_plot2 %>%
 baseplot <- 
   ggplot(mapping = aes(x = daysSince10Deaths, y = changeDailyPercSmooth)) +
   # Show background data
-  geom_point(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
-  geom_line(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
+  geom_point(data = df2_plot2, aes(group = area, colour = area), alpha = 0.4, size = 0.8) +
+  geom_line(data = df2_plot2, aes(group = area, colour = area), alpha = 0.4, size = 0.8) +
   # Show label
   geom_point(data = df3_plot2, aes(colour = area)) +
-  geom_text(data = df3_plot2, aes(label = area, colour = area), vjust = 2) +
+  geom_label(data = df3_plot2, aes(x = ifelse(daysSince10Deaths > 50, 50, daysSince10Deaths),
+                                  label = area, colour = area), hjust = -0.1, vjust = 0, alpha = 0.4) +
   # Show selected country
   geom_point(data = df_selectedcountry_plot2, aes(group = area), colour = "#3a6589", size = 1.4) +
   geom_line(data = df_selectedcountry_plot2, aes( group = area), colour = "#3a6589", size = 1.4) +
   # Show label selected countrys
   geom_point(data = df2_selectedcountry_plot2, colour = "#3a6589", size = 2) +
-  geom_label(data = df2_selectedcountry_plot2, aes(label = area), colour = "#3a6589", vjust = 2) +
-  labs(x = "Daily increase in number of deaths",
+  geom_label(data = df2_selectedcountry_plot2, aes(label = area), colour = "#3a6589", hjust = -0) +
+  labs(x = "Days since 10th Death",
        y = "% Change in deaths",
        fill = "Country",
-       title = glue::glue("COVID-19 related deaths: {country} vs. other countries", country = params$country),
+       title = glue::glue("COVID-19 daily change in deaths: {country} vs. other countries", country = params$country),
+       subtitle = "3 day moving average of the number of deaths",
        caption = caption) +
-  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35)) +
-  coord_cartesian(xlim = c(0, 50)) +
+  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35, 42, 49)) +
+  coord_cartesian(xlim = c(0, 55)) +
   theme(
     panel.grid.minor = element_line(linetype = "dashed", colour = "grey90"),
     legend.position = "none"
