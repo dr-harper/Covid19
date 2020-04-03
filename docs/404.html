@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>404.utf8</title>
+
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<link href="libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libs/highlightjs-9.12.0/highlight.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, orientation=auto"/>
+<meta name="description" content="Up to date data visualisations of the COVID-19 pandemic"/>
+<meta name="twitter:title" content="COVID-19 Data Visualisations"/>
+<meta name="twitter:description" content="Up to date data visualisations of the COVID-19 pandemic"/>
+<meta name="twitter:url" content="www.coviz.info"/>
+<meta name="twitter:image:src" content="https://www.coviz.info/resources/animatedMap.gif"/>
+<meta name="twitter:image:alt" content="Animated map of the world COVID-19"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:creator" content="@DrMichaelHarper"/>
+<meta name="twitter:site" content="@DrMichaelHarper"/>
+<meta name="og:title" content="COVID-19 Data Visualisations"/>
+<meta name="og:description" content="Up to date data visualisations of the COVID-19 pandemic"/>
+<meta name="og:url" content="www.coviz.info"/>
+<meta name="og:image" content="https://www.coviz.info/resources/animatedMap.gif"/>
+<meta name="og:image:alt" content="Animated map of the world COVID-19"/>
+<meta name="og:type" content="website"/>
+<meta name="og:locale" content="en_UK"/>
+<meta name="og:site_name" content="COVID-19 Visualisation"/>
+<meta name="article:author" content="Michael Harper"/>
+<meta property="og:site_name" content="COVID-19 Visualisation"/>
+<meta property="og:title" content=""/>
+<meta property="og:type" content="website"/>
+<meta property="article:modified_time" content="2020-04-03"/>
+<meta property="og:description" content="Up to date data visualisations of the COVID-19 pandemic"/>
+<meta property="og:url" content="www.coviz.info"/>
+<meta property="og:image" content="https://www.coviz.info/resources/animatedMap.gif"/>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-109605445-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-109605445-2');
+</script>
+
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://dr-harper.github.io/Covid19/">COVID-19 Visualisation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+<li>
+  <a href="https://dr-harper.github.io/Covid19/summary">Global Summary</a>
+</li>
+<li>
+  <a href="https://dr-harper.github.io/Covid19/countries">National Statistics</a>
+</li>
+<li>
+  <a href="https://dr-harper.github.io/Covid19/about">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+</div>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="resources/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<center>
+Ooops, it looks like this page doesn’t exist! Choose a link below.
+</center>
+<p><img src="https://cdn.pixabay.com/photo/2016/04/24/22/30/monitor-1350918_960_720.png" width="50%" style="display: block; margin: auto;" /></p>
+<div id="global-analysis" class="section level1">
+<h1>Global Analysis</h1>
+<button type="button" class="btn btn-primary">
+<a href="https://www.coviz.info/summary">Global Summary</a>
+</button>
+</div>
+<div id="country-analysis" class="section level1">
+<h1>Country Analysis</h1>
+<p>Separate Analysis is provided for each country:</p>
+<p><strong>A</strong> - <a href="countries/Afghanistan">Afghanistan</a> - <a href="countries/Albania">Albania</a> - <a href="countries/Algeria">Algeria</a> - <a href="countries/Andorra">Andorra</a> - <a href="countries/Angola">Angola</a> - <a href="countries/Antigua%20and%20Barbuda">Antigua and Barbuda</a> - <a href="countries/Argentina">Argentina</a> - <a href="countries/Armenia">Armenia</a> - <a href="countries/Australia">Australia</a> - <a href="countries/Austria">Austria</a> - <a href="countries/Azerbaijan">Azerbaijan</a></p>
+<p><strong>B</strong> - <a href="countries/Bahamas">Bahamas</a> - <a href="countries/Bahrain">Bahrain</a> - <a href="countries/Bangladesh">Bangladesh</a> - <a href="countries/Barbados">Barbados</a> - <a href="countries/Belarus">Belarus</a> - <a href="countries/Belgium">Belgium</a> - <a href="countries/Belize">Belize</a> - <a href="countries/Benin">Benin</a> - <a href="countries/Bhutan">Bhutan</a> - <a href="countries/Bolivia">Bolivia</a> - <a href="countries/Bosnia%20and%20Herzegovina">Bosnia and Herzegovina</a> - <a href="countries/Botswana">Botswana</a> - <a href="countries/Brazil">Brazil</a> - <a href="countries/Brunei">Brunei</a> - <a href="countries/Bulgaria">Bulgaria</a> - <a href="countries/Burkina%20Faso">Burkina Faso</a> - <a href="countries/Burma">Burma</a> - <a href="countries/Burundi">Burundi</a></p>
+<p><strong>C</strong> - <a href="countries/Cabo%20Verde">Cabo Verde</a> - <a href="countries/Cambodia">Cambodia</a> - <a href="countries/Cameroon">Cameroon</a> - <a href="countries/Canada">Canada</a> - <a href="countries/Central%20African%20Republic">Central African Republic</a> - <a href="countries/Chad">Chad</a> - <a href="countries/Chile">Chile</a> - <a href="countries/China">China</a> - <a href="countries/Colombia">Colombia</a> - <a href="countries/Congo">Congo</a> - <a href="countries/Costa%20Rica">Costa Rica</a> - <a href="countries/Cote%20d&#39;Ivoire">Cote d’Ivoire</a> - <a href="countries/Croatia">Croatia</a> - <a href="countries/Cuba">Cuba</a> - <a href="countries/Cyprus">Cyprus</a> - <a href="countries/Czechia">Czechia</a></p>
+<p><strong>D</strong> - <a href="countries/Denmark">Denmark</a> - <a href="countries/Diamond%20Princess">Diamond Princess</a> - <a href="countries/Djibouti">Djibouti</a> - <a href="countries/Dominica">Dominica</a> - <a href="countries/Dominican%20Republic">Dominican Republic</a> - <a href="countries/DRC">DRC</a></p>
+<p><strong>E</strong> - <a href="countries/Ecuador">Ecuador</a> - <a href="countries/Egypt">Egypt</a> - <a href="countries/El%20Salvador">El Salvador</a> - <a href="countries/Equatorial%20Guinea">Equatorial Guinea</a> - <a href="countries/Eritrea">Eritrea</a> - <a href="countries/Estonia">Estonia</a> - <a href="countries/Eswatini">Eswatini</a> - <a href="countries/Ethiopia">Ethiopia</a></p>
+<p><strong>F</strong> - <a href="countries/Fiji">Fiji</a> - <a href="countries/Finland">Finland</a> - <a href="countries/France">France</a></p>
+<p><strong>G</strong> - <a href="countries/Gabon">Gabon</a> - <a href="countries/Gambia">Gambia</a> - <a href="countries/Georgia">Georgia</a> - <a href="countries/Germany">Germany</a> - <a href="countries/Ghana">Ghana</a> - <a href="countries/Greece">Greece</a> - <a href="countries/Grenada">Grenada</a> - <a href="countries/Guatemala">Guatemala</a> - <a href="countries/Guinea-Bissau">Guinea-Bissau</a> - <a href="countries/Guinea">Guinea</a> - <a href="countries/Guyana">Guyana</a></p>
+<p><strong>H</strong> - <a href="countries/Haiti">Haiti</a> - <a href="countries/Holy%20See">Holy See</a> - <a href="countries/Honduras">Honduras</a> - <a href="countries/Hungary">Hungary</a></p>
+<p><strong>I</strong> - <a href="countries/Iceland">Iceland</a> - <a href="countries/India">India</a> - <a href="countries/Indonesia">Indonesia</a> - <a href="countries/Iran">Iran</a> - <a href="countries/Iraq">Iraq</a> - <a href="countries/Ireland">Ireland</a> - <a href="countries/Israel">Israel</a> - <a href="countries/Italy">Italy</a></p>
+<p><strong>J</strong> - <a href="countries/Jamaica">Jamaica</a> - <a href="countries/Japan">Japan</a> - <a href="countries/Jordan">Jordan</a></p>
+<p><strong>K</strong> - <a href="countries/Kazakhstan">Kazakhstan</a> - <a href="countries/Kenya">Kenya</a> - <a href="countries/Kosovo">Kosovo</a> - <a href="countries/Kuwait">Kuwait</a> - <a href="countries/Kyrgyzstan">Kyrgyzstan</a></p>
+<p><strong>L</strong> - <a href="countries/Laos">Laos</a> - <a href="countries/Latvia">Latvia</a> - <a href="countries/Lebanon">Lebanon</a> - <a href="countries/Liberia">Liberia</a> - <a href="countries/Libya">Libya</a> - <a href="countries/Liechtenstein">Liechtenstein</a> - <a href="countries/Lithuania">Lithuania</a> - <a href="countries/Luxembourg">Luxembourg</a></p>
+<p><strong>M</strong> - <a href="countries/Madagascar">Madagascar</a> - <a href="countries/Malawi">Malawi</a> - <a href="countries/Malaysia">Malaysia</a> - <a href="countries/Maldives">Maldives</a> - <a href="countries/Mali">Mali</a> - <a href="countries/Malta">Malta</a> - <a href="countries/Mauritania">Mauritania</a> - <a href="countries/Mauritius">Mauritius</a> - <a href="countries/Mexico">Mexico</a> - <a href="countries/Moldova">Moldova</a> - <a href="countries/Monaco">Monaco</a> - <a href="countries/Mongolia">Mongolia</a> - <a href="countries/Montenegro">Montenegro</a> - <a href="countries/Morocco">Morocco</a> - <a href="countries/Mozambique">Mozambique</a> - <a href="countries/MS%20Zaandam">MS Zaandam</a></p>
+<p><strong>N</strong> - <a href="countries/Namibia">Namibia</a> - <a href="countries/Nepal">Nepal</a> - <a href="countries/Netherlands">Netherlands</a> - <a href="countries/New%20Zealand">New Zealand</a> - <a href="countries/Nicaragua">Nicaragua</a> - <a href="countries/Niger">Niger</a> - <a href="countries/Nigeria">Nigeria</a> - <a href="countries/North%20Macedonia">North Macedonia</a> - <a href="countries/Norway">Norway</a></p>
+<p><strong>O</strong> - <a href="countries/Oman">Oman</a></p>
+<p><strong>P</strong> - <a href="countries/Pakistan">Pakistan</a> - <a href="countries/Panama">Panama</a> - <a href="countries/Papua%20New%20Guinea">Papua New Guinea</a> - <a href="countries/Paraguay">Paraguay</a> - <a href="countries/Peru">Peru</a> - <a href="countries/Philippines">Philippines</a> - <a href="countries/Poland">Poland</a> - <a href="countries/Portugal">Portugal</a></p>
+<p><strong>Q</strong> - <a href="countries/Qatar">Qatar</a></p>
+<p><strong>R</strong> - <a href="countries/Romania">Romania</a> - <a href="countries/Russia">Russia</a> - <a href="countries/Rwanda">Rwanda</a></p>
+<p><strong>S</strong> - <a href="countries/Saint%20Kitts%20and%20Nevis">Saint Kitts and Nevis</a> - <a href="countries/Saint%20Lucia">Saint Lucia</a> - <a href="countries/Saint%20Vincent%20and%20the%20Grenadines">Saint Vincent and the Grenadines</a> - <a href="countries/San%20Marino">San Marino</a> - <a href="countries/Saudi%20Arabia">Saudi Arabia</a> - <a href="countries/Senegal">Senegal</a> - <a href="countries/Serbia">Serbia</a> - <a href="countries/Seychelles">Seychelles</a> - <a href="countries/Sierra%20Leone">Sierra Leone</a> - <a href="countries/Singapore">Singapore</a> - <a href="countries/Slovakia">Slovakia</a> - <a href="countries/Slovenia">Slovenia</a> - <a href="countries/Somalia">Somalia</a> - <a href="countries/South%20Africa">South Africa</a> - <a href="countries/South%20Korea">South Korea</a> - <a href="countries/Spain">Spain</a> - <a href="countries/Sri%20Lanka">Sri Lanka</a> - <a href="countries/Sudan">Sudan</a> - <a href="countries/Suriname">Suriname</a> - <a href="countries/Sweden">Sweden</a> - <a href="countries/Switzerland">Switzerland</a> - <a href="countries/Syria">Syria</a></p>
+<p><strong>T</strong> - <a href="countries/Taiwan">Taiwan</a> - <a href="countries/Tanzania">Tanzania</a> - <a href="countries/Thailand">Thailand</a> - <a href="countries/Timor-Leste">Timor-Leste</a> - <a href="countries/Togo">Togo</a> - <a href="countries/Trinidad%20and%20Tobago">Trinidad and Tobago</a> - <a href="countries/Tunisia">Tunisia</a> - <a href="countries/Turkey">Turkey</a></p>
+<p><strong>U</strong> - <a href="countries/Uganda">Uganda</a> - <a href="countries/UK">UK</a> - <a href="countries/Ukraine">Ukraine</a> - <a href="countries/United%20Arab%20Emirates">United Arab Emirates</a> - <a href="countries/Uruguay">Uruguay</a> - <a href="countries/US">US</a> - <a href="countries/Uzbekistan">Uzbekistan</a></p>
+<p><strong>V</strong> - <a href="countries/Venezuela">Venezuela</a> - <a href="countries/Vietnam">Vietnam</a></p>
+<p><strong>W</strong> - <a href="countries/West%20Bank%20and%20Gaza">West Bank and Gaza</a></p>
+<p><strong>Z</strong> - <a href="countries/Zambia">Zambia</a> - <a href="countries/Zimbabwe">Zimbabwe</a></p>
+</div>
+
+&nbsp;
+<hr />
+<p style="text-align: center;">Work by <a href="https://mikeyharper.uk">Michael Harper, 2020, CC BY 4.0</a></p>
+<p style="text-align: center;"><span style="color: #808080;"><em>www.mikeyharper.uk</em></span></p>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+<p style="text-align: center;">
+    <a href="https://twitter.com/DrMichaelHarper" class="fa fa-twitter"></a>
+    <a href="https://www.linkedin.com/in/dr-harper/" class="fa fa-linkedin"></a>
+    <a href="https://github.com/dr-harper/" class="fa fa-github"></a>
+</p>
+
+&nbsp;
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
