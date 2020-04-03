@@ -1,7 +1,7 @@
 ---
 date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
 params:
-  country: Afghanistan
+  country: US
 title: "`r glue::glue('{country} COVID-19 Statistics', country = params$country)`"
 ---
 
@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = F,
                       warning = F,
                       echo = FALSE,
                       fig.align = "center",
-                      out.width = "100%")
+                      out.width = "100%",
+                      dev = "svg")
 
 # Avoid numbers being rounded
 options(scipen = 999)
@@ -42,7 +43,7 @@ files.sources = list.files(here::here("functions"))
 invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 
 # Setup captions
-caption <- glue::glue("Data Source: John Jopkins University
+caption <- glue::glue("Data Source: John Hopkins University
                          Data updated on {date}
                          CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
@@ -56,74 +57,99 @@ df <- readr::read_csv(here::here("data/global/covid_data_global.csv"),
 df_all <- loadData(spatial = T)
 world_map <- loadWorldMap()
 
+
+# Define the colour palette for the plot
+set_swatch(c(
+  "#785d37",
+  "#62bba5", "#ffb84d",
+  "#aaa488", "#b2432f",
+  "#3a6589", "#9b5672",
+  "#908150", "#373634", 
+  "#569b7f", "#292217"
+))
+
 ```
 
+
+```{r fig.height=2.5, fig.width=6, paged.print=FALSE}
+mapCountry <- world_map %>%
+  filter(region == params$country)
+
+if(nrow(mapCountry) > 0){
+  
+mapContinent <- world_map %>%
+  filter(continent == mapCountry$continent)
+
+bbox <- sf::st_bbox(mapCountry) %>% as.numeric()
+
+ggplot() +
+  geom_sf(data = world_map, fill = "grey95", colour = "grey95") +
+  geom_sf(data = mapContinent, fill = "grey90", colour = "grey90")  +
+  geom_sf(data = mapCountry, fill = "#3a6589", colour = NA) +
+  theme(plot.caption = element_text(size = rel(0.5)),
+        plot.background = element_rect(fill = NA, colour = NA),
+        panel.background = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line = element_blank(),
+        axis.title = element_blank(),
+        panel.grid = element_blank(),
+        legend.background = element_blank(),
+        title = element_text(colour = '#706f6f', size = rel(2), hjust = 0.5),
+        plot.title = element_text(colour = '#706f6f', size = rel(1.5), hjust = 0.5),
+        legend.position = "none")
+  
+}
+
+```
+
+
+
 ```{r}
+# Select data for the reference country only
 df_country <- df_all %>%
   filter(region == params$country)
 
-# Calculate metrics
-deaths <-
-  df_country %>%
+# Custom function to calculate indicators
+metrics <- summaryIndicators(df_country)
+
+country_rank <- df_all %>%
+  group_by(region) %>%
   filter(date == max(date)) %>%
+  ungroup() %>%
   filter(type == "deaths") %>%
-  pull(value)
-
-deaths_7_days_ago <- 
-  df_country %>%
-  filter(date == max(df$date) - lubridate::ddays(7)) %>%
-  filter(type == "deaths") %>%
-  pull(value)
-
-# Calculate metrics
-recovered <-
-  df_country %>%
-  filter(date == max(date)) %>%
-  filter(type == "recovered") %>%
-  pull(value)
-
-cases <- 
-  df_country %>%
-  filter(date == max(date)) %>%
-  filter(type == "cases") %>%
-  pull(value)
-
-cases_7_days_ago <-
-  df_country %>%
-  filter(date == max(df$date) - lubridate::ddays(7)) %>%
-  filter(type == "cases") %>%
-  pull(value)
+  mutate(rank = min_rank(-value))
 
 
-increasePercentageCases <- scales::percent(cases/cases_7_days_ago)
-increasePercentageDeaths <- scales::percent(deaths/deaths_7_days_ago)
+globalRank <- country_rank %>%
+  filter(region == params$country) %>%
+  pull(rank)
+
 ```
 
-```{block2, type = "rmdimportant", echo = T}
-Note, the country statistics are in beta development. More features will be added over the coming week. Make sure to check back for more details and statistics
-```
-
-There are **`r cases`** recorded cases and **`r deaths`** recorded deaths. In the past 7 days, this has increase by **`r increasePercentageCases`** and **`r increasePercentageDeaths`** respectively. 
+This web page provides daily updating statistics for the COVID-19 pandemic. As of `r format(Sys.time(), '%d %B, %Y')`, the `r params$country` has **`r metrics$cases`** recorded cases and **`r metrics$deaths`** recorded deaths. In the past 7 days, this has increase by **`r metrics$increasePercentageCases`** and **`r metrics$increasePercentageDeaths`** respectively.
 
 ```{r}
 fluidRow(
-    infoBox(
-      "Confirmed Cases", cases, icon = icon("users"), color = "blue", fill = TRUE
-    ),
-    infoBox(
-      "Deaths", deaths, icon = icon("users"), color = "red",
-      fill = TRUE
-    ),
-    infoBox(
-      "Recovered", recovered, icon = icon("hospital"), color = "green",
-      fill = TRUE
-    )
+  infoBox(
+    "Confirmed Cases", metrics$cases, icon = icon("users"), color = "blue", fill = TRUE
+  ),
+  infoBox(
+    "Deaths", metrics$deaths, icon = icon("users"), color = "red",
+    fill = TRUE
+  ),
+  infoBox(
+    "Recovered", metrics$recovered, icon = icon("hospital"), color = "green",
+    fill = TRUE
+  ),
+  infoBox(
+    "Number of Deaths Rank Globally",  scales::ordinal(globalRank), icon = icon("hospital"), color = "purple",
+    fill = TRUE
+  )
 )
 ```
 
-```{block2, type = "rmdimportant", echo = T}
-Note, that we have to be careful when using any data based on confirmed cases for several reasons. Firstly, there are large differences between the ways that countries are testing for Coronavirus. In particular with the numbers of tests being conducted. In general it is expected that confirmed cases are much lower than known currently recorded, the extent to which is unclear.
-```
+Figure \@ref(fig:plotCumulativeCasesandDeaths) shows the global trend in Coronavirus cases. Note it is plotted on a **logarithmic scale**: this is much more useful than a linear plot and fortunately are being increasingly used to display the statistics of the outbreak.. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.
 
 ##  {.tabset}
 
@@ -131,59 +157,146 @@ Note, that we have to be careful when using any data based on confirmed cases fo
 
 ```{r plotCumulativeCasesandDeaths, fig.cap = "Cumulative number of cases"}
 p1 <- 
-    df_country %>%
+  df_country %>%
   filter(type != "recovered") %>%
   ggplot(aes(x = date, y = value, colour = type)) +
-  geom_line() +
+  geom_line(size = 1.4) +
   geom_point(aes(text = paste0(stringr::str_to_title(type), ": ", value))) +
   labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
-       subtitle = glue::glue("Logarithmic scale enables us to understand the exponential growth better
-                             Data accurate as of {date}", date = max(df_country$date)),
+       subtitle = "Logarithmic scale enables us to understand the exponential growth better",
        colour = "Type",
        y = "Count",
        x = "Date",
        caption = caption) +
-  theme(legend.position = "right",
+  theme(legend.position = "top",
         panel.grid.minor.y = element_line(linetype = "solid", colour = "grey90", size = 0.1),
         plot.caption = element_text(size = rel(0.7))) +
   scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:10) *10000, c(1:10) *100000),
-                breaks = c(100, 1000, 10000, 100000, 1000000))
+                breaks = c(10, 100, 1000, 10000, 100000, 1000000),
+                limits = (c(1, max(df_country$value))* 2),
+                expand = c(0,0))
 p1
 ```
 
 ### Linear
 
 ```{r plotCumulativeLinear, fig.cap = "Cumulative number of cases"}
-p2 <- ggplot(df_country, aes(x = date, y = value, colour = type)) +
-  geom_line() +
-  labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
-       subtitle = glue::glue("Linear plots make it hard to visualise whether the exponential growth is being controlled
-                             Data accurate as of {date}", date = max(df_country$date)),
-       colour = "Type",
-       y = "Count",
-       x = "Date",
-       caption = caption) +
-  theme(legend.position = "right",
-        plot.caption = element_text(size = rel(0.7)))
-p2
-```
-
-
-```{r}
 p2 <- 
   df_country %>%
   filter(type != "recovered") %>%
   ggplot(aes(x = date, y = value, colour = type)) +
-  geom_line() +
-  labs(title = glue::glue("Cumulative Cases and Deaths for {country}", country = params$country),
-       subtitle = glue::glue("Total number of confirmed cases: {cases}
-       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
-  theme(legend.position = "right",
-        panel.grid.minor = element_line(linetype = "dashed", colour = "grey90", size = 0.4),
-        panel.grid.major = element_line(linetype = "solid", colour = "grey90")) +
-  scale_y_log10(minor_breaks = c(c(1:9), c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:9) *10000))
+  geom_line(size = 1.4) +
+  labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
+       subtitle = glue::glue("Linear plots make it hard to visualise whether the exponential growth is being controlled"),
+       colour = "Type",
+       y = "Count",
+       x = "Date",
+       caption = caption) +
+  theme(legend.position = "top",
+        plot.caption = element_text(size = rel(0.7)))
 p2
 ```
+
+# Comparison Against other countries
+
+Although cases may be more useful to understand the scale of the outbreak, it can be difficult to compare countries as there are [very different testing schemes](https://ourworldindata.org/covid-testing). The numbers of deaths give a more consistent comparison of statistics if we are trying to understand differences internationally, which are more consistently recorded. Using the deaths, we can understand the rate of spread of the virus, although it should be aware that deaths will typically occur around two weeks after infection. It therefore mean deaths lag behind any changes in public policy, so when governments introduce any measures, there will be a delay in when they see the impact within the data.
+
+```{r plotLogarithmic, fig.height=5, fig.width=8}
+
+# Function to easily produce straight lines on logarithmic plot
+growthRate <- function(doubleEvery, days, start = 10) {
+  start * 2**((days) / doubleEvery)
+}
+
+# Calculate the lines
+lines <- data.frame(x = 0:50) %>%
+  mutate(
+    y1 = growthRate(1, x),
+    y2 = growthRate(2, x),
+    y3 = growthRate(3, x),
+    y7 = growthRate(7, x)
+  ) %>%
+  gather(key = y, value = "values", -x)
+
+# Have to manually specify angle as this depends on the graph aspect ratio, so cannot easily be calculated
+labels <- data.frame(
+  x = c(10, 20, 32, 35),
+  y = c(growthRate(1, 10), growthRate(2, 20), growthRate(3, 32), growthRate(7, 35)),
+  label = c("Doubles Daily", "... every 2 Days", "... every 3 Days", ". every  Week"),
+  angle = c(60, 45, 34, 16)
+)
+
+# Prepare the data
+df_plot2 <-
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(daysSince10Deaths >= 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince10Deaths)) %>%
+  filter(daysSince10Deaths <= 50)
+
+# List key countries
+# Deselect if key country is also the country being displayed
+keyCountries <- c("UK", "US", "Italy", "Spain", "France", "South Korea", "China", "Germany", "Japan", "Iran")
+dropMatching <- keyCountries[!(keyCountries %in% params$country)]
+
+df2_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area %in% dropMatching)
+
+df3_plot2 <- df2_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+df_selectedcountry_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area == params$country)
+
+df2_selectedcountry_plot2 <- df_selectedcountry_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+baseplot <- 
+  ggplot(mapping = aes(x = daysSince10Deaths, y = value)) +
+  # Show growth lines
+  annotate(geom = "text", x = labels$x, y = labels$y, label = labels$label, angle = labels$angle, colour = "grey50", vjust = -1) +
+  geom_line(data = lines, aes(x, values, group = y), linetype = "dashed", colour = "grey50") +
+  # Show background data for other countries
+  geom_point(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
+  geom_line(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
+  # Show label for other countries
+  geom_point(data = df3_plot2, aes(colour = area)) +
+  geom_text(data = df3_plot2, aes(label = area, colour = area), vjust = 2) +
+  # Show data for selected country
+  geom_point(data = df_selectedcountry_plot2, aes(group = area, colour = region), colour = "#3a6589", size = 1.4) +
+  geom_line(data = df_selectedcountry_plot2, aes( group = area), colour = "#3a6589", size = 1.4) +
+  # Show label for selected country
+  geom_point(data = df2_selectedcountry_plot2, colour = "#3a6589", size = 2) +
+  geom_label(data = df2_selectedcountry_plot2, aes(label = area), colour = "#3a6589", vjust = -1) +
+  labs(x = "Days Since 10th Death",
+       y = "Cumulative Number of Deaths",
+       fill = "Country",
+       title = glue::glue("COVID-19 related deaths: {country} vs. other countries", country = params$country),
+       caption = paste0(caption, "\nDesign inspired by Financial Times")) +
+  scale_y_log10(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35, 42, 49)) +
+  coord_cartesian(xlim = c(0, 50), ylim = c(10, 50000)) +
+  theme(
+    panel.grid.minor = element_line(linetype = "dashed", colour = "grey90"),
+    legend.position = "none"
+  )
+
+if(nrow(df_selectedcountry_plot2) == 0) baseplot <- baseplot + labs(subtitle = glue::glue("{country} has yet to have 10 deaths and therefore is not displayed", country = params$country))
+
+
+baseplot
+
+```
+
+
+# Daily Count
+
 
 ```{r fig.height=4, fig.width=6}
 
@@ -191,33 +304,99 @@ p2
 df_country_bar <- df_country %>%
   filter(daysSince200Outbreak > 0)
 
-if(nrow(df_country_bar) > 0){
-  
-  p2 <- ggplot(df_country_bar) + 
+# If more than 200 cases, it is better to skip these as there is noise
+if(nrow(df_country_bar) == 0) df_country_bar <- df_country
+
+p2 <- ggplot(df_country_bar) + 
   geom_col(aes(x = date, y = changeDaily, fill = type), colour = "grey90") +
   labs(title = "Daily number of recorded cases and deaths",
        y = "Number",
        x = "Date",
        subtitle = glue::glue("Total number of confirmed cases: {cases}
-       Total number of deaths: {deaths}", deaths = deaths, cases = cases)) +
+       Total number of deaths: {deaths}", deaths = metrics$deaths, cases = metrics$cases)) +
   facet_grid(type~., scales = "free_y", labeller = labeller(type = function(x) tools::toTitleCase(x))) +
   scale_y_continuous(expand = c(0.1,0.1)) + 
   theme(panel.grid.major.x = element_blank(),
         legend.background = element_blank(),
         legend.position = "none")
-
 p2
-  
-}
-
 
 ```
+
+```{r plotPercent, fig.height=5, fig.width=8}
+
+# Prepare the data
+df_plot2 <-
+  df_all %>%
+  filter(type == "deaths") %>%
+  filter(daysSince10Deaths >= 0) %>%
+  filter(region != "Cruise Ship") %>%
+  group_by(region) %>%
+  mutate(numdaysMax = max(daysSince10Deaths)) %>%
+  filter(daysSince10Deaths <= 60) %>%
+  mutate(changeDailyPercSmooth  = (changeDailyPerc + lag(changeDailyPerc, 1) + lag(changeDailyPerc, 2))/3)
+
+# List key countries
+# Deselect if key country is also the country being displayed
+keyCountries <- c("UK", "US", "Italy", "Spain", "France", "South Korea", "China", "Germany", "Japan", "Iran")
+dropMatching <- keyCountries[!(keyCountries %in% params$country)]
+
+df2_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area %in% dropMatching)
+
+df3_plot2 <- df2_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+df_selectedcountry_plot2 <- df_plot2 %>%
+  rename("area" = "region") %>%
+  filter(area == params$country)
+
+df2_selectedcountry_plot2 <- df_selectedcountry_plot2 %>%
+  group_by(area) %>%
+  filter(date == max(date))
+
+baseplot <- 
+  ggplot(mapping = aes(x = daysSince10Deaths, y = changeDailyPercSmooth)) +
+  # Show background data
+  geom_point(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
+  geom_line(data = df2_plot2, aes(group = area), colour = "grey70", size = 1.2) +
+  # Show label
+  geom_point(data = df3_plot2, aes(colour = area)) +
+  geom_text(data = df3_plot2, aes(label = area, colour = area), vjust = 2) +
+  # Show selected country
+  geom_point(data = df_selectedcountry_plot2, aes(group = area), colour = "#3a6589", size = 1.4) +
+  geom_line(data = df_selectedcountry_plot2, aes( group = area), colour = "#3a6589", size = 1.4) +
+  # Show label selected countrys
+  geom_point(data = df2_selectedcountry_plot2, colour = "#3a6589", size = 2) +
+  geom_label(data = df2_selectedcountry_plot2, aes(label = area), colour = "#3a6589", vjust = 2) +
+  labs(x = "Daily increase in number of deaths",
+       y = "% Change in deaths",
+       fill = "Country",
+       title = glue::glue("COVID-19 related deaths: {country} vs. other countries", country = params$country),
+       caption = caption) +
+  scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35)) +
+  coord_cartesian(xlim = c(0, 50)) +
+  theme(
+    panel.grid.minor = element_line(linetype = "dashed", colour = "grey90"),
+    legend.position = "none"
+  )
+
+if(nrow(df_selectedcountry_plot2) == 0) baseplot <- baseplot + labs(subtitle = glue::glue("{country} has yet to have 10 deaths and therefore is not displayed", country = params$country))
+
+
+baseplot
+
+```
+
 
 ```{block2, type = "rmdinfo", echo = T}
 More charts will be added in the next few days. Make sure to check back for updates.
 ```
 
 # Data
+
 
 This analysis is largely based on the John Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.
 
@@ -287,6 +466,6 @@ s.setAttribute('data-timestamp', +new Date());
 })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                            
+
 
 
