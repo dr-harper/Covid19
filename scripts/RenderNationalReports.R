@@ -25,5 +25,3 @@ for(i in siteFiles){
 }
 
 
-list.files(path = "docs/countries/", pattern = ".png", recursive = T) %>%
-  file.remove()

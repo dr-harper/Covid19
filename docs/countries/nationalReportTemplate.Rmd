@@ -305,7 +305,7 @@ df_country_bar <- df_country %>%
   filter(daysSince200Outbreak > 0)
 
 # If more than 200 cases, it is better to skip these as there is noise
-if(nrow(df_country_bar) == 0) df_country_bar <- df_country
+if(nrow(df_country_bar) < 15) df_country_bar <- df_country
 
 p2 <- ggplot(df_country_bar) + 
   geom_col(aes(x = date, y = changeDaily, fill = type), colour = "grey90") +
