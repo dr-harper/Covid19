@@ -1,7 +1,7 @@
 ---
 date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
 params:
-  country: US
+  country: Nigeria
 title: "`r glue::glue('{country} COVID-19 Statistics', country = params$country)`"
 ---
 
