@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>South Sudan COVID-19 Statistics</title>
+
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<link href="libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="libs/font-awesome-5.3.1/css/all.min.css" rel="stylesheet" />
+<link href="libs/font-awesome-5.3.1/css/v4-shims.min.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1, orientation=auto"/>
+<meta name="description" content="Daily Updating Summary of the COVID-19 Outbreak"/>
+<meta name="twitter:title" content="COVID-19 Data Visualisations for South Sudan"/>
+<meta name="twitter:description" content="Daily Updating Summary of the COVID-19 Outbreak"/>
+<meta name="twitter:url" content="www.coviz.info"/>
+<meta name="twitter:image:src" content="https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true"/>
+<meta name="twitter:image:alt" content="Growth Rates of COVID-19"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:creator" content="@DrMichaelHarper"/>
+<meta name="twitter:site" content="@DrMichaelHarper"/>
+<meta name="og:title" content="COVID-19 Data Visualisations for South Sudan"/>
+<meta name="og:description" content="Daily Updating Summary of the COVID-19 Outbreak"/>
+<meta name="og:url" content="www.coviz.info"/>
+<meta name="og:image" content="https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true"/>
+<meta name="og:image:alt" content="Growth Rates of COVID-19"/>
+<meta name="og:type" content="website"/>
+<meta name="og:locale" content="en_UK"/>
+<meta name="og:site_name" content="COVID-19 Visualisation"/>
+<meta name="article:author" content="Michael Harper"/>
+<meta property="og:site_name" content="COVID-19 Visualisation"/>
+<meta property="og:title" content="COVID-19 Data Visualisations for South Sudan"/>
+<meta property="og:type" content="website"/>
+<meta property="article:modified_time" content="2020-04-06"/>
+<meta property="og:description" content="Up to date data visualisations of the COVID-19 pandemic"/>
+<meta property="og:url" content="www.coviz.info"/>
+<meta property="og:image" content="https://github.com/dr-harper/Covid19/blob/master/docs/summary_files/figure-html/plotLogarithmic-1.png?raw=true"/>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-109605445-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-109605445-2');
+</script>
+
+<div class="container-fluid main-container">
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://dr-harper.github.io/Covid19/">COVID-19 Visualisation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+<li>
+  <a href="https://dr-harper.github.io/Covid19/summary">Global Summary</a>
+</li>
+<li>
+  <a href="https://dr-harper.github.io/Covid19/countries">National Statistics</a>
+</li>
+<li>
+  <a href="https://dr-harper.github.io/Covid19/about">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+</div>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="resources/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">South Sudan COVID-19 Statistics</h1>
+<h4 class="date">Last updated: 06 April, 2020</h4>
+
+</div>
+
+
+<p><img src="South%20Sudan_files/figure-html/unnamed-chunk-1-1.svg" width="100%" style="display: block; margin: auto;" /></p>
+<p>This web page provides daily updating statistics for the COVID-19 pandemic. As of 06 April, 2020, the South Sudan has <strong>1</strong> recorded cases and <strong>0</strong> recorded deaths. In the past 7 days, this has increase by <strong>Inf</strong> and <strong>NA</strong> respectively.</p>
+<div class="row">
+<div class="col-sm-4">
+<div class="info-box bg-blue">
+<span class="info-box-icon">
+<i class="fa fa-users"></i>
+</span>
+<div class="info-box-content">
+<span class="info-box-text">Confirmed Cases</span>
+<span class="info-box-number">1</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="info-box bg-red">
+<span class="info-box-icon">
+<i class="fa fa-users"></i>
+</span>
+<div class="info-box-content">
+<span class="info-box-text">Deaths</span>
+<span class="info-box-number">0</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="info-box bg-green">
+<span class="info-box-icon">
+<i class="fa fa-hospital"></i>
+</span>
+<div class="info-box-content">
+<span class="info-box-text">Recovered</span>
+<span class="info-box-number">0</span>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="info-box bg-purple">
+<span class="info-box-icon">
+<i class="fa fa-hospital"></i>
+</span>
+<div class="info-box-content">
+<span class="info-box-text">Number of Deaths Rank Globally</span>
+<span class="info-box-number">144th</span>
+</div>
+</div>
+</div>
+</div>
+<p>Figure <a href="#fig:plotCumulativeCasesandDeaths">1</a> shows the global trend in Coronavirus cases. Note it is plotted on a <strong>logarithmic scale</strong>: this is much more useful than a linear plot and fortunately are being increasingly used to display the statistics of the outbreak.. In situations like this where we are dealing with a exponential growth, logarithmic plots enable us to easily visualise the rate of change much easier. Plotted on this, we transform the exponential curve into a straight line. If the line gets steeper, it means the virus is spreading quicker, while reducing the gradient shows that the virus is getting under control.</p>
+<div id="section" class="section level2 tabset">
+<h2></h2>
+<div id="logarithmic" class="section level3">
+<h3>Logarithmic</h3>
+<div class="figure" style="text-align: center"><span id="fig:plotCumulativeCasesandDeaths"></span>
+<img src="South%20Sudan_files/figure-html/plotCumulativeCasesandDeaths-1.svg" alt="Cumulative number of cases" width="100%" />
+<p class="caption">
+Figure 1: Cumulative number of cases
+</p>
+</div>
+</div>
+<div id="linear" class="section level3">
+<h3>Linear</h3>
+<div class="figure" style="text-align: center"><span id="fig:plotCumulativeLinear"></span>
+<img src="South%20Sudan_files/figure-html/plotCumulativeLinear-1.svg" alt="Cumulative number of cases" width="100%" />
+<p class="caption">
+Figure 2: Cumulative number of cases
+</p>
+</div>
+</div>
+</div>
+<div id="comparison-against-other-countries" class="section level1">
+<h1>Comparison Against other countries</h1>
+<p>Although cases may be more useful to understand the scale of the outbreak, it can be difficult to compare countries as there are <a href="https://ourworldindata.org/covid-testing">very different testing schemes</a>. The numbers of deaths give a more consistent comparison of statistics if we are trying to understand differences internationally, which are more consistently recorded. Using the deaths, we can understand the rate of spread of the virus, although it should be aware that deaths will typically occur around two weeks after infection. It therefore mean deaths lag behind any changes in public policy, so when governments introduce any measures, there will be a delay in when they see the impact within the data.</p>
+<p><img src="South%20Sudan_files/figure-html/plotLogarithmic-1.svg" width="100%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="daily-count" class="section level1">
+<h1>Daily Count</h1>
+<p><img src="South%20Sudan_files/figure-html/unnamed-chunk-4-1.svg" width="100%" style="display: block; margin: auto;" /></p>
+<p><img src="South%20Sudan_files/figure-html/plotPercent-1.svg" width="100%" style="display: block; margin: auto;" /></p>
+
+<div class="rmdinfo">
+More charts will be added in the next few days. Make sure to check back for updates.
+</div>
+
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>This analysis is largely based on the John Hopkins Novel Coronavirus Dataset, which is <a href="https://github.com/CSSEGISandData/COVID-19/blob/master/README.md">available here</a>. It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.</p>
+</div>
+<div id="feedback-and-support" class="section level1">
+<h1>Feedback and Support</h1>
+<p>Have any graphs you would like to see made in this website? <a href="about">Reach out to me</a> with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could <a href="https://www.paypal.me/mikeyharper">donate</a> to support this effort.</p>
+<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 10px 7px 10px !important;line-height: 35px !important;height:51px !important;min-width:217px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#79D6B5 !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 10px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style>
+<p><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/BXFAIV5"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a></p>
+</div>
+<div id="comments" class="section level1">
+<h1>Comments</h1>
+<script id="dsq-count-scr" src="//coviz-info.disqus.com/count.js" async></script>
+<div id="disqus_thread">
+
+</div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://coviz-info.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>
+Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+</div>
+
+&nbsp;
+<hr />
+<p style="text-align: center;">Work by <a href="https://mikeyharper.uk">Michael Harper, 2020, CC BY 4.0</a></p>
+<p style="text-align: center;"><span style="color: #808080;"><em>www.mikeyharper.uk</em></span></p>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+<p style="text-align: center;">
+    <a href="https://twitter.com/DrMichaelHarper" class="fa fa-twitter"></a>
+    <a href="https://www.linkedin.com/in/dr-harper/" class="fa fa-linkedin"></a>
+    <a href="https://github.com/dr-harper/" class="fa fa-github"></a>
+</p>
+
+&nbsp;
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
