@@ -36,8 +36,8 @@ summaryIndicators <- function(df){
     filter(type == "cases") %>%
     pull(value)
 
-  increasePercentageCases <- scales::percent(cases/cases_7_days_ago)
-  increasePercentageDeaths <- scales::percent(deaths/deaths_7_days_ago)
+  increasePercentageCases <- scales::percent((cases/cases_7_days_ago)-1)
+  increasePercentageDeaths <- scales::percent((deaths/deaths_7_days_ago)-1)
 
   # Return object
   return(list(deaths = deaths,
