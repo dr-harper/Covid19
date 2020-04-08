@@ -28,5 +28,8 @@ for(i in c(countries_list)){
 
 }
 
-
-
+# Commit to github
+system("git add -A")
+system(glue::glue('git commit -m "Automatic Update {time}"',
+                  time = format(Sys.time(), '%d %B %Y %H:%M')))
+system('git push')
