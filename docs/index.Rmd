@@ -7,8 +7,6 @@ title: "Coronavirus Data Visualisation"
 knitr::opts_chunk$set(echo=F, message = F, out.width = "100%")
 ```
 
-<link rel="icon" href="https://raw.githubusercontent.com/dr-harper/Covid19/master/docs/favicon.ico" type="image/x-icon" />
-
 
 ```{r results="asis"}
 library(metathis)
