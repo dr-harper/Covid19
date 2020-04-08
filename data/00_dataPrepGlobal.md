@@ -308,7 +308,7 @@ sessionInfo()
     ## Running under: macOS  10.15.4
     ## 
     ## Matrix products: default
-    ## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+    ## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
     ## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
     ## 
     ## locale:
@@ -318,22 +318,15 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] sf_0.8-0           forcats_0.4.0      stringr_1.4.0      dplyr_0.8.5       
-    ##  [5] purrr_0.3.3        tidyr_1.0.2        tibble_2.1.3       ggplot2_3.3.0.9000
-    ##  [9] tidyverse_1.2.1    readr_1.3.1       
+    ##  [1] sf_0.8-0           forcats_0.4.0      stringr_1.4.0      dplyr_0.8.5        purrr_0.3.3        tidyr_1.0.2        tibble_2.1.3       ggplot2_3.3.0.9000
+    ##  [9] tidyverse_1.2.1    readr_1.3.1        here_0.1          
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] tidyselect_1.0.0   xfun_0.12          haven_2.1.0        lattice_0.20-38   
-    ##  [5] colorspace_1.4-1   vctrs_0.2.4        generics_0.0.2     htmltools_0.4.0   
-    ##  [9] yaml_2.2.1         rlang_0.4.5        e1071_1.7-3        pillar_1.4.3      
-    ## [13] glue_1.3.2         withr_2.1.2        DBI_1.1.0          spDataLarge_0.3.1 
-    ## [17] modelr_0.1.4       readxl_1.3.1       lifecycle_0.2.0    munsell_0.5.0     
-    ## [21] gtable_0.3.0       cellranger_1.1.0   rvest_0.3.5        evaluate_0.14     
-    ## [25] knitr_1.28         curl_4.3           class_7.3-15       fansi_0.4.1       
-    ## [29] broom_0.5.2        Rcpp_1.0.4         KernSmooth_2.23-15 scales_1.1.0      
-    ## [33] backports_1.1.5    classInt_0.4-2     jsonlite_1.6.1     hms_0.4.2         
-    ## [37] digest_0.6.25      stringi_1.4.6      grid_3.6.0         cli_2.0.2         
-    ## [41] tools_3.6.0        magrittr_1.5       crayon_1.3.4       pkgconfig_2.0.3   
-    ## [45] ellipsis_0.3.0     xml2_1.2.5         spData_0.3.2       lubridate_1.7.4   
-    ## [49] assertthat_0.2.1   rmarkdown_2.1      httr_1.4.1         rstudioapi_0.11   
-    ## [53] R6_2.4.1           units_0.6-5        nlme_3.1-140       compiler_3.6.0
+    ##  [1] Rcpp_1.0.4         lubridate_1.7.4    lattice_0.20-38    class_7.3-15       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      packrat_0.5.0     
+    ##  [9] spDataLarge_0.3.1  R6_2.4.1           cellranger_1.1.0   backports_1.1.5    evaluate_0.14      e1071_1.7-3        httr_1.4.1         pillar_1.4.3      
+    ## [17] rlang_0.4.5        curl_4.3           readxl_1.3.1       rstudioapi_0.11    DT_0.13            rmarkdown_2.1      htmlwidgets_1.5.1  munsell_0.5.0     
+    ## [25] broom_0.5.2        compiler_3.6.0     modelr_0.1.4       xfun_0.12          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.0.0   bookdown_0.18     
+    ## [33] fansi_0.4.1        crayon_1.3.4       withr_2.1.2        grid_3.6.0         nlme_3.1-140       spData_0.3.2       jsonlite_1.6.1     gtable_0.3.0      
+    ## [41] lifecycle_0.2.0    DBI_1.1.0          magrittr_1.5       units_0.6-5        scales_1.1.0       KernSmooth_2.23-15 cli_2.0.2          stringi_1.4.6     
+    ## [49] xml2_1.2.5         ellipsis_0.3.0     vctrs_0.2.4        generics_0.0.2     tools_3.6.0        glue_1.3.2         hms_0.4.2          rsconnect_0.8.13  
+    ## [57] yaml_2.2.1         colorspace_1.4-1   classInt_0.4-2     rvest_0.3.5        knitr_1.28         haven_2.1.0
