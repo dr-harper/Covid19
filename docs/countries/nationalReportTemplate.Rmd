@@ -43,7 +43,7 @@ files.sources = list.files(here::here("functions"))
 invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 
 # Setup captions
-caption <- glue::glue("Data Source: John Hopkins University
+caption <- glue::glue("Data Source: Johns Hopkins University
                          Data updated on {date}
                          CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
@@ -401,7 +401,7 @@ More charts will be added in the next few days. Make sure to check back for upda
 # Data
 
 
-This analysis is largely based on the John Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.
+This analysis is largely based on the Johns Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.
 
 ```{r results="asis"}
 # Make metadata
