@@ -1,3 +1,7 @@
+# Johns Hopkins Dataset updates at around 00:50
+# https://github.com/CSSEGISandData/COVID-19
+system("git ls-remote https://github.com/CSSEGISandData/COVID-19 refs/heads/master")
+
 # Run script to download latest data from Johns Hopkins then rebuild files
 library(tidyverse)
 library(here)
@@ -17,14 +21,20 @@ for(i in siteFiles){
 # Load All Countries
 countries <- read_csv(here("data/global/covid_data_global.csv"))
 countries_list <- unique(countries$region)
+count_num <- 1
 
 for(i in c(countries_list)){
 
   filename <- glue::glue("docs/countries/{region}.html", region = i)
 
+  message(count_num, "/", length(countries_list), ": Rendering ", filename)
+
   rmarkdown::render(input = here("docs/countries/nationalReportTemplate.Rmd"),
                     output_file =  here(filename),
-                    params = list(country = i))
+                    params = list(country = i),
+                    quiet = T)
+
+  count_num <- count_num + 1
 
 }
 
@@ -33,3 +43,6 @@ system("git add -A")
 system(glue::glue('git commit -m ":rocket: Automatic Update {time}"',
                   time = format(Sys.time(), '%d %B %Y %H:%M')))
 system('git push')
+
+# Put computer to sleep
+system('pmset sleepnow')

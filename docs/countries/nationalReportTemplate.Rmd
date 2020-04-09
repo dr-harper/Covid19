@@ -44,8 +44,7 @@ invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 
 # Setup captions
 caption <- glue::glue("Data Source: Johns Hopkins University
-                         Data updated on {date}
-                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
+                        Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
 current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
 
@@ -77,27 +76,27 @@ mapCountry <- world_map %>%
 
 if(nrow(mapCountry) > 0){
   
-mapContinent <- world_map %>%
-  filter(continent == mapCountry$continent)
-
-bbox <- sf::st_bbox(mapCountry) %>% as.numeric()
-
-ggplot() +
-  geom_sf(data = world_map, fill = "grey95", colour = "grey95") +
-  geom_sf(data = mapContinent, fill = "grey90", colour = "grey90")  +
-  geom_sf(data = mapCountry, fill = "#3a6589", colour = NA) +
-  theme(plot.caption = element_text(size = rel(0.5)),
-        plot.background = element_rect(fill = NA, colour = NA),
-        panel.background = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        axis.line = element_blank(),
-        axis.title = element_blank(),
-        panel.grid = element_blank(),
-        legend.background = element_blank(),
-        title = element_text(colour = '#706f6f', size = rel(2), hjust = 0.5),
-        plot.title = element_text(colour = '#706f6f', size = rel(1.5), hjust = 0.5),
-        legend.position = "none")
+  mapContinent <- world_map %>%
+    filter(continent == mapCountry$continent)
+  
+  bbox <- sf::st_bbox(mapCountry) %>% as.numeric()
+  
+  ggplot() +
+    geom_sf(data = world_map, fill = "grey95", colour = "grey95") +
+    geom_sf(data = mapContinent, fill = "grey90", colour = "grey90")  +
+    geom_sf(data = mapCountry, fill = "#3a6589", colour = NA) +
+    theme(plot.caption = element_text(size = rel(0.5)),
+          plot.background = element_rect(fill = NA, colour = NA),
+          panel.background = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.line = element_blank(),
+          axis.title = element_blank(),
+          panel.grid = element_blank(),
+          legend.background = element_blank(),
+          title = element_text(colour = '#706f6f', size = rel(2), hjust = 0.5),
+          plot.title = element_text(colour = '#706f6f', size = rel(1.5), hjust = 0.5),
+          legend.position = "none")
   
 }
 
@@ -298,27 +297,47 @@ baseplot
 # Daily Count
 
 
-```{r fig.height=4, fig.width=6}
+```{r fig.height=6, fig.width=8}
 
 # Only show since 200th outbreak
 df_country_bar <- df_country %>%
-  filter(daysSince200Outbreak > 0)
+  filter(daysSinceOutbreak > 0)
 
 # If more than 200 cases, it is better to skip these as there is noise
-if(nrow(df_country_bar) < 15) df_country_bar <- df_country
+if(nrow(df_country_bar) < 45) df_country_bar <- df_country
+
+df_country_bar <- 
+  df_country_bar %>%
+  mutate(type = tools::toTitleCase(type))
+
+plot_labels <- df_country_bar %>%
+  group_by(type) %>%
+  summarise(maxValue = 0.9 * max(changeDaily, na.rm = T),
+            minDate = min(date),
+            total = max(value)) %>%
+  mutate(minDate = min(minDate),
+         maxAll = max(maxValue),
+         label = glue::glue("{type}: {total}"))
+
+int_breaks <- function(x, n = 5) pretty(x, n)[pretty(x, n) %% 1 == 0] 
 
 p2 <- ggplot(df_country_bar) + 
   geom_col(aes(x = date, y = changeDaily, fill = type), colour = "grey90") +
-  labs(title = "Daily number of recorded cases and deaths",
+  labs(title = glue::glue("{country} daily statistics for COVID-19", country = params$country),
+       subtitle = glue::glue("Information as of {date}", date = format(Sys.time(), '%d %B %H:00')),
        y = "Number",
        x = "Date",
-       subtitle = glue::glue("Total number of confirmed cases: {cases}
-       Total number of deaths: {deaths}", deaths = metrics$deaths, cases = metrics$cases)) +
-  facet_grid(type~., scales = "free_y", labeller = labeller(type = function(x) tools::toTitleCase(x))) +
-  scale_y_continuous(expand = c(0.1,0.1)) + 
+       caption = caption) +
+  geom_label(data = plot_labels, aes(x = minDate, y = maxValue, label = label, fill = type), 
+             hjust = 0, label.r = unit(0, "mm"), label.size = 0.2, alpha = 0.5) +
+  facet_grid(type~., scales = "free_y") +
+  scale_y_continuous(expand = c(0.1,0.1), breaks = int_breaks) + 
+  scale_x_datetime(date_breaks = "1 week", date_labels = "%d %B") +
   theme(panel.grid.major.x = element_blank(),
         legend.background = element_blank(),
-        legend.position = "none")
+        legend.position = "none",
+        strip.background = element_blank(),
+        strip.text.y = element_blank())
 p2
 
 ```
@@ -366,7 +385,7 @@ baseplot <-
   # Show label
   geom_point(data = df3_plot2, aes(colour = area)) +
   geom_label(data = df3_plot2, aes(x = ifelse(daysSince10Deaths > 50, 50, daysSince10Deaths),
-                                  label = area, colour = area), hjust = -0.1, vjust = 0, alpha = 0.4) +
+                                   label = area, colour = area), hjust = -0.1, vjust = 0, alpha = 0.4) +
   # Show selected country
   geom_point(data = df_selectedcountry_plot2, aes(group = area), colour = "#3a6589", size = 1.4) +
   geom_line(data = df_selectedcountry_plot2, aes( group = area), colour = "#3a6589", size = 1.4) +
