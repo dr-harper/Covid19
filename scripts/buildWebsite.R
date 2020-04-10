@@ -26,7 +26,7 @@ hash_current <- checkHash()
 # Checks if hash as updated. If not will wait for 5 minutes
 while(hash_current == hash_previous){
 
-  message("Hash Unchanged, Waiting")
+  message(format(Sys.time(), "%H:%M"), " Hash Unchanged, Waiting")
   Sys.sleep(5 * 60)
   hash_current <- checkHash()
 
