@@ -12,6 +12,18 @@ analysis:
   - Enriches data by calculating additional metrics such as cases per
     million, rate of change
 
+<!-- end list -->
+
+``` r
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readr)
+library(tidyverse)
+library(sf)
+```
+
+    ## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
+
 # Specify Global Naming
 
 The analysis uses different datasets which slightly different naming
@@ -184,6 +196,11 @@ df_cases_extra <-
   select(-c(firstOutbreak, first200Outbreak, firstDeath, first10Deaths))
 ```
 
+    ## Joining, by = "region"
+    ## Joining, by = "region"
+    ## Joining, by = "region"
+    ## Joining, by = "region"
+
 # Load Population Data
 
 To calculate normalised infection rates, we will use the population
@@ -200,6 +217,8 @@ pop <- read_csv("dataIn/worldBankPop.csv",
          region = recode(region, !!!countryNameDict))
 ```
 
+    ## Warning: Missing column names filled in: 'X65' [65]
+
 This is merged with the full dataset and then used to calculate the
 infection rates:
 
@@ -213,6 +232,25 @@ df_all_extra <-
          casespermillion = round(value/pop, 2)) %>%
   arrange(region, date)
 ```
+
+    ## Joining, by = "region"
+
+# Income Groups
+
+``` r
+income_group <- read_csv(here::here("data/dataIn/WorldIncomeGroups.csv"), col_types = cols()) %>%
+  filter(Year == "Fiscal Year 2020") %>%
+  select(c("Economy", "Income Group")) %>%
+  set_names("region", "Income") %>%
+  mutate(region = recode(region, !!!countryNameDict))
+
+
+df_all_extra <- 
+  df_all_extra %>%
+  left_join(income_group)
+```
+
+    ## Joining, by = "region"
 
 # Spatial Data
 
@@ -240,7 +278,11 @@ required to make it easy to use within the **tidyverse** workflow:
 df_all_spatial <- 
   df_all_extra %>%
   left_join(world_map)
+```
 
+    ## Joining, by = "region"
+
+``` r
 # Retain the continent variable
 df_all_extra <- 
 df_all_spatial %>%
@@ -276,23 +318,19 @@ sessionInfo()
     ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
     ## 
     ## attached base packages:
-    ## [1] grid      stats     graphics  grDevices utils     datasets  methods   base     
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] glue_1.3.2           metathis_1.0.2       shinydashboard_0.7.1 shiny_1.3.2          emojifont_0.5.3      plotly_4.9.2         magick_2.3          
-    ##  [8] ggthemr_1.1.0        patchwork_0.0.1.9000 gganimate_1.0.5      maps_3.3.0           sf_0.8-0             forcats_0.4.0        stringr_1.4.0       
-    ## [15] dplyr_0.8.5          purrr_0.3.3          tidyr_1.0.2          tibble_2.1.3         ggplot2_3.3.0.9000   tidyverse_1.2.1      readr_1.3.1         
-    ## [22] here_0.1            
+    ##  [1] sf_0.8-0           rmarkdown_2.1      here_0.1           forcats_0.4.0      stringr_1.4.0      dplyr_0.8.5        purrr_0.3.3       
+    ##  [8] readr_1.3.1        tidyr_1.0.2        tibble_2.1.3       ggplot2_3.3.0.9000 tidyverse_1.2.1   
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] nlme_3.1-140       lubridate_1.7.4    progress_1.2.2     httr_1.4.1         rprojroot_1.3-2    tools_3.6.0        backports_1.1.5    R6_2.4.1          
-    ##  [9] KernSmooth_2.23-15 spData_0.3.2       DBI_1.1.0          lazyeval_0.2.2     colorspace_1.4-1   withr_2.1.2        gridExtra_2.3      tidyselect_1.0.0  
-    ## [17] prettyunits_1.1.1  curl_4.3           compiler_3.6.0     cli_2.0.2          rvest_0.3.5        Cairo_1.5-10       xml2_1.2.5         labeling_0.3      
-    ## [25] bookdown_0.18      scales_1.1.0       classInt_0.4-2     digest_0.6.25      rmarkdown_2.1      pkgconfig_2.0.3    htmltools_0.4.0    showtext_0.7-1    
-    ## [33] highr_0.8          htmlwidgets_1.5.1  rlang_0.4.5        readxl_1.3.1       rstudioapi_0.11    sysfonts_0.8       farver_2.0.3       generics_0.0.2    
-    ## [41] jsonlite_1.6.1     crosstalk_1.1.0.1  magrittr_1.5       Rcpp_1.0.4         munsell_0.5.0      fansi_0.4.1        viridis_0.5.1      proto_1.0.0       
-    ## [49] lifecycle_0.2.0    stringi_1.4.6      yaml_2.2.1         promises_1.1.0     crayon_1.3.4       lattice_0.20-38    haven_2.1.0        hms_0.4.2         
-    ## [57] knitr_1.28         pillar_1.4.3       packrat_0.5.0      evaluate_0.14      data.table_1.12.2  gifski_0.8.6       modelr_0.1.4       vctrs_0.2.4       
-    ## [65] tweenr_1.0.1       httpuv_1.5.1       cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1   xfun_0.12          mime_0.9           xtable_1.8-4      
-    ## [73] broom_0.5.2        e1071_1.7-3        later_1.0.0        rsconnect_0.8.13   class_7.3-15       viridisLite_0.3.0  showtextdb_2.0     units_0.6-5       
-    ## [81] ellipsis_0.3.0     spDataLarge_0.3.1
+    ##  [1] tidyselect_1.0.0   xfun_0.12          haven_2.1.0        lattice_0.20-38    colorspace_1.4-1   vctrs_0.2.4        generics_0.0.2    
+    ##  [8] htmltools_0.4.0    yaml_2.2.1         rlang_0.4.5        e1071_1.7-3        pillar_1.4.3       DBI_1.1.0          glue_1.3.2        
+    ## [15] withr_2.1.2        spDataLarge_0.3.1  modelr_0.1.4       readxl_1.3.1       lifecycle_0.2.0    munsell_0.5.0      gtable_0.3.0      
+    ## [22] cellranger_1.1.0   rvest_0.3.5        evaluate_0.14      knitr_1.28         curl_4.3           class_7.3-15       fansi_0.4.1       
+    ## [29] broom_0.5.2        Rcpp_1.0.4         KernSmooth_2.23-15 classInt_0.4-2     scales_1.1.0       backports_1.1.5    jsonlite_1.6.1    
+    ## [36] hms_0.4.2          packrat_0.5.0      digest_0.6.25      stringi_1.4.6      grid_3.6.0         rprojroot_1.3-2    cli_2.0.2         
+    ## [43] tools_3.6.0        magrittr_1.5       crayon_1.3.4       pkgconfig_2.0.3    ellipsis_0.3.0     xml2_1.2.5         spData_0.3.2      
+    ## [50] lubridate_1.7.4    assertthat_0.2.1   httr_1.4.1         rstudioapi_0.11    R6_2.4.1           units_0.6-5        nlme_3.1-140      
+    ## [57] compiler_3.6.0

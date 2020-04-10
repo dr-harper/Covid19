@@ -203,6 +203,22 @@ df_all_extra <-
   arrange(region, date)
 ```
 
+
+# Income Groups
+
+```{r}
+income_group <- read_csv(here::here("data/dataIn/WorldIncomeGroups.csv"), col_types = cols()) %>%
+  filter(Year == "Fiscal Year 2020") %>%
+  select(c("Economy", "Income Group")) %>%
+  set_names("region", "Income") %>%
+  mutate(region = recode(region, !!!countryNameDict))
+
+
+df_all_extra <- 
+  df_all_extra %>%
+  left_join(income_group)
+```
+
 # Spatial Data
 
 Spatial data is useful for visualising the datasets. These are formatted to be consistent with the second dataset, making renaming the fields to match and altering names to match to enable an easy spatial join:
