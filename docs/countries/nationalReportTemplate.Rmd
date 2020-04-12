@@ -332,7 +332,7 @@ p2 <- ggplot(df_country_bar) +
              hjust = 0, label.r = unit(0, "mm"), label.size = 0.2, alpha = 0.5) +
   facet_grid(type~., scales = "free_y") +
   scale_y_continuous(expand = c(0.1,0.1), breaks = int_breaks) + 
-  scale_x_datetime(date_breaks = "1 week", date_labels = "%d %B") +
+  scale_x_datetime(date_breaks = "1 week", date_labels = "%d %b") +
   theme(panel.grid.major.x = element_blank(),
         legend.background = element_blank(),
         legend.position = "none",
