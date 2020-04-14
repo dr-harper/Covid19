@@ -43,7 +43,7 @@ invisible(sapply(files.sources, function(x) source(here::here("functions", x))))
 # Setup captions
 caption <- glue::glue("Data Source: Johns Hopkins University
                          Data updated on {date}
-                         CC BY 4.0 Michael Harper 2020 www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
+                         www.coviz.info", date = format(Sys.time(), '%d %B %Y'))
 
 current_date <- glue::glue("Data updated on {date}", date = format(Sys.time(), '%d %B %Y'))
 
@@ -109,17 +109,17 @@ There are **`r cases`** recorded cases and **`r deaths`** recorded deaths. In th
 
 ```{r}
 fluidRow(
-    infoBox(
-      "Confirmed Cases", cases, icon = icon("users"), color = "blue", fill = TRUE
-    ),
-    infoBox(
-      "Deaths", deaths, icon = icon("users"), color = "red",
-      fill = TRUE
-    ),
-    infoBox(
-      "Recovered", recovered, icon = icon("hospital"), color = "green",
-      fill = TRUE
-    )
+  infoBox(
+    "Confirmed Cases", cases, icon = icon("users"), color = "blue", fill = TRUE
+  ),
+  infoBox(
+    "Deaths", deaths, icon = icon("users"), color = "red",
+    fill = TRUE
+  ),
+  infoBox(
+    "Recovered", recovered, icon = icon("hospital"), color = "green",
+    fill = TRUE
+  )
 )
 ```
 
@@ -149,7 +149,7 @@ p1 <-
        y = "Count",
        x = "Date",
        caption = caption) +
-   scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:10) *10000, c(1:10) *100000),
+  scale_y_log10(minor_breaks = c(c(1:9) *10, c(1:9) *100, c(1:9) *1000, c(1:10) *10000, c(1:10) *100000),
                 breaks = c(100, 1000, 10000, 100000, 1000000)) +
   scale_x_date(limits = c(min(df_plot1$date), max(df_plot1$date) + lubridate::ddays(7))) +
   theme(legend.position = "none",
@@ -202,16 +202,19 @@ df_plot3_labels <- df_sum_continent %>%
 
 p2 <- ggplot(df_sum_continent, aes(x = date, y = value, fill = continent)) + 
   geom_line(aes(group = continent, colour = continent)) +
+  geom_point(aes(group = continent, colour = continent), size = 0.5) +
   geom_text(data = df_plot3_labels, aes(label = stringr::str_to_title(continent)), hjust = -0) +
   labs(title = "Number of daily recorded deaths",
        y = "Total Deaths",
        x = "Date",
-       fill = "Continent") +
-  scale_y_log10(expand = c(0,0), limits = c(1, max(df_sum_continent$value * 10)), breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000)) + 
+       fill = "Continent",
+       caption = caption) +
+  scale_y_log10(expand = c(0,0), limits = c(10, max(df_sum_continent$value * 10)), breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000)) + 
   theme(panel.grid.major.x = element_blank(),
         legend.background = element_blank(),
         legend.position = "none") +
-  scale_x_datetime(limits = c(min(df_sum_continent$date), max(df_sum_continent$date) + lubridate::ddays(14)))
+  scale_x_datetime(expand = c(0, 0),
+                   limits = c(min(df_sum_continent$date), max(df_sum_continent$date) + lubridate::ddays(20)))
 p2
 ```
 
@@ -331,13 +334,14 @@ Detailed country statistics are available within the [countries](countries) tab.
 
 Figure \@ref(fig:growthTrajectory) shows that many countries are following the same trajectory of Italy, often seen as one of the main region to encounter COVID-19 issues.
 
-```{r growthTrajectory, fig.height=10, fig.width=12, fig.cap = "Rate of Death trajectory for countries with more than 200 cases of COVID-19"}
+```{r growthTrajectory, fig.height=12, fig.width=12, fig.cap = "Rate of Death trajectory for countries with more than 200 cases of COVID-19"}
 
 df_plot1 <-
   df_all %>%
   filter(type == "cases") %>%
   filter(daysSince200Outbreak > 0) %>%
   filter(region != "Cruise Ship") %>%
+  filter(!is.na(continent)) %>%
   group_by(region) %>%
   mutate(numdaysMax = max(daysSince200Outbreak)) %>%
   ungroup() %>%
@@ -360,15 +364,19 @@ ggplot(df_plot1) +
     title = "Outbreaks are now underway in many countries, with some at similar trajectories as Italy",
     subtitle = "Cumulative number of confirmed cases, by number of days since 100th case",
     caption = caption) +
-  scale_y_log10(limits = c(200, 1000000 ),
-                breaks = c(200, 1000, 10000, 100000, 1000000),
+  scale_y_log10(limits = c(100, 1000000),
+                breaks = c(100, 1000, 10000, 100000, 1000000),
                 labels = function(x) format(x, scientific = FALSE),
                 expand = c(0,0)) +
   scale_x_continuous(limits = c(0, 40), expand = c(0,0)) +
-  facet_wrap(region ~ ., ncol = 12, shrink = FALSE) +
+  facet_wrap(region ~ ., ncol = 10, shrink = FALSE) +
+  annotate("segment", x=0, xend=0, y=100, yend=Inf, colour = "grey80") +
+  annotate("segment", x=0, xend=Inf, y=0, yend=0, colour = "grey80") +
   theme(
-    aspect.ratio = 1,
-    panel.grid = element_blank()
+    aspect.ratio = 0.75,
+    panel.grid = element_blank(),
+    plot.background = element_rect(fill = "#F6F1EB"),
+    strip.background = element_rect(fill = "#F6F1EB")
   )
 ```
 
@@ -526,9 +534,9 @@ ggplot(df_cfr, aes(date, cfr, group = region, colour = region)) +
        y = "Case Fatality Rate",
        x = "Date",
        caption = caption) +
-   geom_text(data = dataLabels, aes(label = region),
-             x = max(dataLabels$date),
-             hjust = -.1, direction = "y") +
+  geom_text(data = dataLabels, aes(label = region),
+            x = max(dataLabels$date),
+            hjust = -.1, direction = "y") +
   theme(legend.position = "none",
         panel.grid.major.x = element_blank(),
         panel.grid.minor.y = element_line(colour = "grey90", linetype = "dashed")) +
@@ -558,7 +566,7 @@ df_cfr_filtered <-
   group_by(region) %>%
   filter(date == max(date)) %>% 
   ungroup()
-  
+
 
 plot_3 <- ggplot(df_cfr_today, aes(x = cases, y = cfr, group = region)) +
   scale_x_log10() +
@@ -613,10 +621,7 @@ as_meta(openGraph)
 
 # Feedback and Support
 
-Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](https://www.paypal.me/mikeyharper) to support this effort.
-
-<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 10px 7px 10px !important;line-height: 35px !important;height:51px !important;min-width:217px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#79D6B5 !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 10px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/BXFAIV5"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:15px;font-size:28px !important;">Buy me a coffee</span></a>
-
+Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](https://www.buymeacoffee.com/BXFAIV5) to support this effort.
 
 # Comments
 
@@ -642,5 +647,5 @@ s.setAttribute('data-timestamp', +new Date());
 })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-                            
+
 
