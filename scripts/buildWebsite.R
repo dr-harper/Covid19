@@ -14,12 +14,13 @@ library(rmarkdown)
 # 1 --- Checking if data has updated
 
 # Load file of the previous hash
-hash_previous <- read_file("scripts/hash.txt")
+hash_previous <- read_file("scripts/hash.txt") %>%
+  stringr::str_replace_all("\n", "")
 
 # Function to extract the commit ID of the latest committ to Johns Hopkins
 checkHash <- function(){
   system("git ls-remote https://github.com/CSSEGISandData/COVID-19 refs/heads/master", intern = T) %>%
-    stringr::str_replace("\trefs/heads/master", "\n")}
+    stringr::str_replace("\trefs/heads/master", "")}
 
 hash_current <- checkHash()
 
@@ -33,7 +34,7 @@ while(hash_current == hash_previous){
 }
 
 # Save new hash to file for future reference
-a %>%
+hash_current %>%
   write(file = "scripts/hash.txt", append = F)
 
 # 2 --- Running Analysis
