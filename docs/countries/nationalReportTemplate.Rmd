@@ -1,7 +1,7 @@
 ---
 date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
 params:
-  country: Nigeria
+  country: UK
 title: "`r glue::glue('{country} COVID-19 Statistics', country = params$country)`"
 ---
 
@@ -309,7 +309,8 @@ if(nrow(df_country_bar) < 45) df_country_bar <- df_country
 
 df_country_bar <- 
   df_country_bar %>%
-  mutate(type = tools::toTitleCase(type))
+  mutate(type = tools::toTitleCase(type)) %>%
+  filter(changeDaily > 0)
 
 plot_labels <- df_country_bar %>%
   group_by(type) %>%
