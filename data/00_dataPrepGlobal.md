@@ -22,8 +22,6 @@ library(tidyverse)
 library(sf)
 ```
 
-    ## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
-
 # Specify Global Naming
 
 The analysis uses different datasets which slightly different naming
@@ -318,19 +316,23 @@ sessionInfo()
     ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
     ## 
     ## attached base packages:
-    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## [1] grid      stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] sf_0.8-0           rmarkdown_2.1      here_0.1           forcats_0.4.0      stringr_1.4.0      dplyr_0.8.5        purrr_0.3.3       
-    ##  [8] readr_1.3.1        tidyr_1.0.2        tibble_2.1.3       ggplot2_3.3.0.9000 tidyverse_1.2.1   
+    ##  [1] shinydashboard_0.7.1 shiny_1.3.2          emojifont_0.5.3      plotly_4.9.2         magick_2.3           ggthemr_1.1.0        patchwork_0.0.1.9000
+    ##  [8] gganimate_1.0.5      maps_3.3.0           glue_1.3.2           metathis_1.0.2       sf_0.8-0             rmarkdown_2.1        here_0.1            
+    ## [15] forcats_0.4.0        stringr_1.4.0        dplyr_0.8.5          purrr_0.3.3          readr_1.3.1          tidyr_1.0.2          tibble_2.1.3        
+    ## [22] ggplot2_3.3.0.9000   tidyverse_1.2.1     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] tidyselect_1.0.0   xfun_0.12          haven_2.1.0        lattice_0.20-38    colorspace_1.4-1   vctrs_0.2.4        generics_0.0.2    
-    ##  [8] htmltools_0.4.0    yaml_2.2.1         rlang_0.4.5        e1071_1.7-3        pillar_1.4.3       glue_1.3.2         withr_2.1.2       
-    ## [15] DBI_1.1.0          spDataLarge_0.3.1  modelr_0.1.4       readxl_1.3.1       lifecycle_0.2.0    munsell_0.5.0      gtable_0.3.0      
-    ## [22] cellranger_1.1.0   rvest_0.3.5        evaluate_0.14      knitr_1.28         curl_4.3           class_7.3-15       fansi_0.4.1       
-    ## [29] broom_0.5.2        Rcpp_1.0.4         KernSmooth_2.23-15 scales_1.1.0       backports_1.1.5    classInt_0.4-2     jsonlite_1.6.1    
-    ## [36] hms_0.4.2          packrat_0.5.0      digest_0.6.25      stringi_1.4.6      grid_3.6.0         rprojroot_1.3-2    cli_2.0.2         
-    ## [43] tools_3.6.0        magrittr_1.5       crayon_1.3.4       pkgconfig_2.0.3    ellipsis_0.3.0     xml2_1.2.5         spData_0.3.2      
-    ## [50] lubridate_1.7.4    assertthat_0.2.1   httr_1.4.1         rstudioapi_0.11    R6_2.4.1           units_0.6-5        nlme_3.1-140      
-    ## [57] compiler_3.6.0
+    ##  [1] nlme_3.1-140       lubridate_1.7.4    progress_1.2.2     httr_1.4.1         rprojroot_1.3-2    tools_3.6.0        backports_1.1.5   
+    ##  [8] R6_2.4.1           KernSmooth_2.23-15 spData_0.3.2       DBI_1.1.0          lazyeval_0.2.2     colorspace_1.4-1   withr_2.1.2       
+    ## [15] tidyselect_1.0.0   prettyunits_1.1.1  curl_4.3           compiler_3.6.0     cli_2.0.2          rvest_0.3.5        xml2_1.2.5        
+    ## [22] bookdown_0.18      scales_1.1.0       classInt_0.4-2     digest_0.6.25      pkgconfig_2.0.3    htmltools_0.4.0    showtext_0.7-1    
+    ## [29] htmlwidgets_1.5.1  rlang_0.4.5        readxl_1.3.1       rstudioapi_0.11    sysfonts_0.8       farver_2.0.3       generics_0.0.2    
+    ## [36] jsonlite_1.6.1     magrittr_1.5       Rcpp_1.0.4         munsell_0.5.0      fansi_0.4.1        proto_1.0.0        lifecycle_0.2.0   
+    ## [43] stringi_1.4.6      yaml_2.2.1         promises_1.1.0     crayon_1.3.4       lattice_0.20-38    haven_2.1.0        hms_0.4.2         
+    ## [50] knitr_1.28         pillar_1.4.3       packrat_0.5.0      evaluate_0.14      data.table_1.12.2  gifski_0.8.6       modelr_0.1.4      
+    ## [57] vctrs_0.2.4        tweenr_1.0.1       httpuv_1.5.1       cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1   xfun_0.12         
+    ## [64] mime_0.9           xtable_1.8-4       broom_0.5.2        e1071_1.7-3        later_1.0.0        class_7.3-15       viridisLite_0.3.0 
+    ## [71] showtextdb_2.0     units_0.6-5        ellipsis_0.3.0     spDataLarge_0.3.1
