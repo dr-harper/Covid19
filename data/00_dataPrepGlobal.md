@@ -329,7 +329,7 @@ sessionInfo()
     ##  [8] htmltools_0.4.0    yaml_2.2.1         rlang_0.4.5        e1071_1.7-3        pillar_1.4.3       glue_1.3.2         withr_2.1.2       
     ## [15] DBI_1.1.0          spDataLarge_0.3.1  modelr_0.1.4       readxl_1.3.1       lifecycle_0.2.0    munsell_0.5.0      gtable_0.3.0      
     ## [22] cellranger_1.1.0   rvest_0.3.5        evaluate_0.14      knitr_1.28         curl_4.3           class_7.3-15       fansi_0.4.1       
-    ## [29] broom_0.5.2        Rcpp_1.0.4         KernSmooth_2.23-15 scales_1.1.0       backports_1.1.5    classInt_0.4-2     jsonlite_1.6.1    
+    ## [29] broom_0.5.2        Rcpp_1.0.4.6       KernSmooth_2.23-15 classInt_0.4-2     scales_1.1.0       backports_1.1.5    jsonlite_1.6.1    
     ## [36] hms_0.4.2          packrat_0.5.0      digest_0.6.25      stringi_1.4.6      grid_3.6.0         rprojroot_1.3-2    cli_2.0.2         
     ## [43] tools_3.6.0        magrittr_1.5       crayon_1.3.4       pkgconfig_2.0.3    ellipsis_0.3.0     xml2_1.2.5         spData_0.3.2      
     ## [50] lubridate_1.7.4    assertthat_0.2.1   httr_1.4.1         rstudioapi_0.11    R6_2.4.1           units_0.6-5        nlme_3.1-140      
