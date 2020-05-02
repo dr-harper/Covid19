@@ -22,8 +22,6 @@ library(tidyverse)
 library(sf)
 ```
 
-    ## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
-
 # Specify Global Naming
 
 The analysis uses different datasets which slightly different naming
