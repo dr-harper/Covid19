@@ -22,6 +22,8 @@ library(tidyverse)
 library(sf)
 ```
 
+    ## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
+
 # Specify Global Naming
 
 The analysis uses different datasets which slightly different naming
@@ -316,23 +318,18 @@ sessionInfo()
     ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
     ## 
     ## attached base packages:
-    ## [1] grid      stats     graphics  grDevices utils     datasets  methods   base     
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] glue_1.4.0           metathis_1.0.2       shinydashboard_0.7.1 shiny_1.4.0.2        emojifont_0.5.3      plotly_4.9.2.1       magick_2.3          
-    ##  [8] ggthemr_1.1.0        patchwork_1.0.0      gganimate_1.0.5      maps_3.3.0           sf_0.9-2             rmarkdown_2.1        here_0.1            
-    ## [15] forcats_0.5.0        stringr_1.4.0        dplyr_0.8.5          purrr_0.3.4          readr_1.3.1          tidyr_1.0.2          tibble_3.0.1        
-    ## [22] ggplot2_3.3.0        tidyverse_1.3.0     
+    ##  [1] sf_0.9-2        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1     tidyr_1.0.2     tibble_3.0.1   
+    ## [11] ggplot2_3.3.0   tidyverse_1.3.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] nlme_3.1-147       fs_1.4.1           lubridate_1.7.8    progress_1.2.2     httr_1.4.1         rprojroot_1.3-2    tools_4.0.0        backports_1.1.6   
-    ##  [9] R6_2.4.1           KernSmooth_2.23-16 spData_0.3.5       DBI_1.1.0          lazyeval_0.2.2     colorspace_1.4-1   raster_3.1-5       withr_2.2.0       
-    ## [17] sp_1.4-1           gridExtra_2.3      tidyselect_1.0.0   prettyunits_1.1.1  curl_4.3           compiler_4.0.0     cli_2.0.2          rvest_0.3.5       
-    ## [25] xml2_1.3.2         labeling_0.3       bookdown_0.18      scales_1.1.0       classInt_0.4-3     digest_0.6.25      pkgconfig_2.0.3    htmltools_0.4.0   
-    ## [33] showtext_0.7-1     highr_0.8          fastmap_1.0.1      dbplyr_1.4.3       htmlwidgets_1.5.1  rlang_0.4.5        readxl_1.3.1       rstudioapi_0.11   
-    ## [41] sysfonts_0.8       farver_2.0.3       generics_0.0.2     jsonlite_1.6.1     crosstalk_1.1.0.1  magrittr_1.5       Rcpp_1.0.4.6       munsell_0.5.0     
-    ## [49] fansi_0.4.1        viridis_0.5.1      proto_1.0.0        lifecycle_0.2.0    stringi_1.4.6      yaml_2.2.1         promises_1.1.0     crayon_1.3.4      
-    ## [57] lattice_0.20-41    haven_2.2.0        hms_0.5.3          knitr_1.28         pillar_1.4.3       codetools_0.2-16   reprex_0.3.0       evaluate_0.14     
-    ## [65] data.table_1.12.8  modelr_0.1.7       httpuv_1.5.2       vctrs_0.2.4        tweenr_1.0.1       cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1  
-    ## [73] xfun_0.13          mime_0.9           xtable_1.8-4       broom_0.5.6        e1071_1.7-3        later_1.0.0        class_7.3-17       viridisLite_0.3.0 
-    ## [81] showtextdb_2.0     units_0.6-6        ellipsis_0.3.0
+    ##  [1] Rcpp_1.0.4.6       lubridate_1.7.8    lattice_0.20-41    class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      R6_2.4.1          
+    ##  [9] cellranger_1.1.0   backports_1.1.6    reprex_0.3.0       evaluate_0.14      e1071_1.7-3        httr_1.4.1         pillar_1.4.3       rlang_0.4.5       
+    ## [17] curl_4.3           readxl_1.3.1       rstudioapi_0.11    raster_3.1-5       munsell_0.5.0      broom_0.5.6        compiler_4.0.0     modelr_0.1.7      
+    ## [25] xfun_0.13          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.0.0   codetools_0.2-16   fansi_0.4.1        crayon_1.3.4       dbplyr_1.4.3      
+    ## [33] withr_2.2.0        grid_4.0.0         nlme_3.1-147       spData_0.3.5       jsonlite_1.6.1     gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0         
+    ## [41] magrittr_1.5       units_0.6-6        scales_1.1.0       KernSmooth_2.23-16 cli_2.0.2          stringi_1.4.6      fs_1.4.1           sp_1.4-1          
+    ## [49] xml2_1.3.2         ellipsis_0.3.0     generics_0.0.2     vctrs_0.2.4        tools_4.0.0        glue_1.4.0         hms_0.5.3          yaml_2.2.1        
+    ## [57] colorspace_1.4-1   classInt_0.4-3     rvest_0.3.5        knitr_1.28         haven_2.2.0
