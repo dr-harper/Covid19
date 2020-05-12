@@ -616,26 +616,28 @@ body {
 <span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(readr)</span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(tidyverse)</span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(sf)</span></code></pre></div>
+<pre><code>## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
+</code></pre>
 <h1 id="specify-global-naming">Specify Global Naming</h1>
 <p>The analysis uses different datasets which slightly different naming conventions. For example, some datasets had <code>United States</code> while other had <code>US</code>. A dictionary of replacement names was therefore created which is later used to recode the data. The <code>recode</code> function is used throughout the example referring to the following list:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Resolves inconsistencies between naming in data sources</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># Not all datasets have inconsistences but set here and applied to all</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a>countryNameDict &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Czech Republic&quot;</span> =<span class="st"> &quot;Czechia&quot;</span>,</span>
-<span id="cb2-4"><a href="#cb2-4"></a>                     <span class="st">&quot;United Kingdom&quot;</span> =<span class="st"> &quot;UK&quot;</span>,</span>
-<span id="cb2-5"><a href="#cb2-5"></a>                     <span class="st">&quot;Bosnia Herzegovina&quot;</span> =<span class="st"> &quot;Bosnia and Herzegovina&quot;</span>,</span>
-<span id="cb2-6"><a href="#cb2-6"></a>                     <span class="st">&quot;Iran, Islamic Rep.&quot;</span> =<span class="st"> &quot;Iran&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>                     <span class="st">&quot;Macedonia&quot;</span> =<span class="st"> &quot;North Macedonia&quot;</span>,</span>
-<span id="cb2-8"><a href="#cb2-8"></a>                     <span class="st">&quot;United States&quot;</span> =<span class="st"> &quot;US&quot;</span>,</span>
-<span id="cb2-9"><a href="#cb2-9"></a>                     <span class="st">&quot;Russian Federation&quot;</span> =<span class="st"> &quot;Russia&quot;</span>,</span>
-<span id="cb2-10"><a href="#cb2-10"></a>                     <span class="st">&quot;Dem. Rep. Korea&quot;</span> =<span class="st"> &quot;North Korea&quot;</span>,</span>
-<span id="cb2-11"><a href="#cb2-11"></a>                     <span class="st">&quot;Congo (Kinshasa)&quot;</span> =<span class="st"> &quot;DRC&quot;</span>,</span>
-<span id="cb2-12"><a href="#cb2-12"></a>                     <span class="st">&quot;Democratic Republic of the Congo&quot;</span> =<span class="st"> &quot;DRC&quot;</span>,</span>
-<span id="cb2-13"><a href="#cb2-13"></a>                     <span class="st">&quot;Congo (Brazzaville)&quot;</span> =<span class="st"> &quot;Congo&quot;</span>,</span>
-<span id="cb2-14"><a href="#cb2-14"></a>                     <span class="st">&quot;Republic of the Congo&quot;</span> =<span class="st"> &quot;Congo&quot;</span>,</span>
-<span id="cb2-15"><a href="#cb2-15"></a>                     <span class="st">&quot;Côte d&#39;Ivoire&quot;</span> =<span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</span>
-<span id="cb2-16"><a href="#cb2-16"></a>                     <span class="st">&quot;Bahamas, The&quot;</span> =<span class="st"> &quot;Bahamas&quot;</span>,</span>
-<span id="cb2-17"><a href="#cb2-17"></a>                     <span class="st">&quot;Taiwan*&quot;</span> =<span class="st"> &quot;Taiwan&quot;</span>,</span>
-<span id="cb2-18"><a href="#cb2-18"></a>                     <span class="st">&quot;Korea, South&quot;</span> =<span class="st"> &quot;South Korea&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Resolves inconsistencies between naming in data sources</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># Not all datasets have inconsistences but set here and applied to all</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>countryNameDict &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Czech Republic&quot;</span> =<span class="st"> &quot;Czechia&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>                     <span class="st">&quot;United Kingdom&quot;</span> =<span class="st"> &quot;UK&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                     <span class="st">&quot;Bosnia Herzegovina&quot;</span> =<span class="st"> &quot;Bosnia and Herzegovina&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>                     <span class="st">&quot;Iran, Islamic Rep.&quot;</span> =<span class="st"> &quot;Iran&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>                     <span class="st">&quot;Macedonia&quot;</span> =<span class="st"> &quot;North Macedonia&quot;</span>,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                     <span class="st">&quot;United States&quot;</span> =<span class="st"> &quot;US&quot;</span>,</span>
+<span id="cb3-9"><a href="#cb3-9"></a>                     <span class="st">&quot;Russian Federation&quot;</span> =<span class="st"> &quot;Russia&quot;</span>,</span>
+<span id="cb3-10"><a href="#cb3-10"></a>                     <span class="st">&quot;Dem. Rep. Korea&quot;</span> =<span class="st"> &quot;North Korea&quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11"></a>                     <span class="st">&quot;Congo (Kinshasa)&quot;</span> =<span class="st"> &quot;DRC&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12"></a>                     <span class="st">&quot;Democratic Republic of the Congo&quot;</span> =<span class="st"> &quot;DRC&quot;</span>,</span>
+<span id="cb3-13"><a href="#cb3-13"></a>                     <span class="st">&quot;Congo (Brazzaville)&quot;</span> =<span class="st"> &quot;Congo&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14"></a>                     <span class="st">&quot;Republic of the Congo&quot;</span> =<span class="st"> &quot;Congo&quot;</span>,</span>
+<span id="cb3-15"><a href="#cb3-15"></a>                     <span class="st">&quot;Côte d&#39;Ivoire&quot;</span> =<span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</span>
+<span id="cb3-16"><a href="#cb3-16"></a>                     <span class="st">&quot;Bahamas, The&quot;</span> =<span class="st"> &quot;Bahamas&quot;</span>,</span>
+<span id="cb3-17"><a href="#cb3-17"></a>                     <span class="st">&quot;Taiwan*&quot;</span> =<span class="st"> &quot;Taiwan&quot;</span>,</span>
+<span id="cb3-18"><a href="#cb3-18"></a>                     <span class="st">&quot;Korea, South&quot;</span> =<span class="st"> &quot;South Korea&quot;</span>)</span></code></pre></div>
 <h1 id="loading-john-hopkins-dataset">Loading John Hopkins Dataset</h1>
 <!---
 # Potentially could use this API in future?
@@ -645,39 +647,39 @@ body {
 
 <p>For the analysis, I am using the COVID-19 dataset produced by John Hopkins University. They provide a daily updating dataset at a national level, which provides the cases, recoveries and deaths associated with the virus. The data can be accessed through the GitHub <a href="https://github.com/CSSEGISandData/COVID-19">repository here</a>, and they also offer a great dashboard for visualising the data <a href="https://coronavirus.jhu.edu/map.html">here</a>.</p>
 <p>There are three separate files for different records stored within the following directory:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Using the John hopkins dataset which updates daily</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>rootDir &lt;-<span class="st"> &quot;https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series&quot;</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a></span>
-<span id="cb3-4"><a href="#cb3-4"></a>files &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;time_series_covid19_confirmed_global.csv&quot;</span>, <span class="st">&quot;time_series_covid19_deaths_global.csv&quot;</span>, <span class="st">&quot;time_series_covid19_recovered_global.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Using the John hopkins dataset which updates daily</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>rootDir &lt;-<span class="st"> &quot;https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>files &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;time_series_covid19_confirmed_global.csv&quot;</span>, <span class="st">&quot;time_series_covid19_deaths_global.csv&quot;</span>, <span class="st">&quot;time_series_covid19_recovered_global.csv&quot;</span>)</span></code></pre></div>
 <p>When the data is loaded, some basic data cleaning to make the data usable for graphing. For those familiar with the tidyverse in R, most functions prefer to have data in <a href="http://www.cookbook-r.com/Manipulating_data/Converting_data_between_wide_and_long_format/">long format</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Function clean data for each of the files and aggregate</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>dataToLong &lt;-<span class="st"> </span><span class="cf">function</span>(filename, var){</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  </span>
-<span id="cb4-4"><a href="#cb4-4"></a>  df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">file.path</span>(rootDir, filename), <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
-<span id="cb4-5"><a href="#cb4-5"></a>  </span>
-<span id="cb4-6"><a href="#cb4-6"></a>  <span class="co"># Convert to long data</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>  dataLong &lt;-<span class="st"> </span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="st">    </span>df <span class="op">%&gt;%</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="st">    </span>tidyr<span class="op">::</span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">&quot;date&quot;</span>, <span class="st">&quot;cases&quot;</span>, <span class="op">-</span><span class="kw">c</span>(<span class="st">&quot;Province/State&quot;</span>,  <span class="st">&quot;Country/Region&quot;</span>, <span class="st">&quot;Lat&quot;</span>, <span class="st">&quot;Long&quot;</span>))</span>
-<span id="cb4-10"><a href="#cb4-10"></a>  </span>
-<span id="cb4-11"><a href="#cb4-11"></a>  <span class="co"># Aggregate to only have a single region per country</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a>  df_all &lt;-</span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="st">    </span>dataLong <span class="op">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="st">    </span><span class="kw">set_names</span>(<span class="kw">c</span>(<span class="st">&quot;province&quot;</span>, <span class="st">&quot;region&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;long&quot;</span>, <span class="st">&quot;date&quot;</span>, <span class="st">&quot;value&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="st">    </span><span class="kw">group_by</span>(region, date) <span class="op">%&gt;%</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">value =</span> <span class="kw">sum</span>(value)) <span class="op">%&gt;%</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">date =</span> lubridate<span class="op">::</span><span class="kw">parse_date_time</span>(date, <span class="st">&quot;%m%d%y&quot;</span>),</span>
-<span id="cb4-19"><a href="#cb4-19"></a>           <span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict), </span>
-<span id="cb4-20"><a href="#cb4-20"></a>           <span class="dt">type =</span> var)</span>
-<span id="cb4-21"><a href="#cb4-21"></a>  </span>
-<span id="cb4-22"><a href="#cb4-22"></a>  <span class="kw">return</span>(df_all)</span>
-<span id="cb4-23"><a href="#cb4-23"></a>} </span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Function clean data for each of the files and aggregate</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>dataToLong &lt;-<span class="st"> </span><span class="cf">function</span>(filename, var){</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  </span>
+<span id="cb5-4"><a href="#cb5-4"></a>  df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">file.path</span>(rootDir, filename), <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  </span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="co"># Convert to long data</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>  dataLong &lt;-<span class="st"> </span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="st">    </span>df <span class="op">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="st">    </span>tidyr<span class="op">::</span><span class="kw">gather</span>(<span class="dt">key =</span> <span class="st">&quot;date&quot;</span>, <span class="st">&quot;cases&quot;</span>, <span class="op">-</span><span class="kw">c</span>(<span class="st">&quot;Province/State&quot;</span>,  <span class="st">&quot;Country/Region&quot;</span>, <span class="st">&quot;Lat&quot;</span>, <span class="st">&quot;Long&quot;</span>))</span>
+<span id="cb5-10"><a href="#cb5-10"></a>  </span>
+<span id="cb5-11"><a href="#cb5-11"></a>  <span class="co"># Aggregate to only have a single region per country</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>  df_all &lt;-</span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="st">    </span>dataLong <span class="op">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="st">    </span><span class="kw">set_names</span>(<span class="kw">c</span>(<span class="st">&quot;province&quot;</span>, <span class="st">&quot;region&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;long&quot;</span>, <span class="st">&quot;date&quot;</span>, <span class="st">&quot;value&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="st">    </span><span class="kw">group_by</span>(region, date) <span class="op">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">value =</span> <span class="kw">sum</span>(value)) <span class="op">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">date =</span> lubridate<span class="op">::</span><span class="kw">parse_date_time</span>(date, <span class="st">&quot;%m%d%y&quot;</span>),</span>
+<span id="cb5-19"><a href="#cb5-19"></a>           <span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict), </span>
+<span id="cb5-20"><a href="#cb5-20"></a>           <span class="dt">type =</span> var)</span>
+<span id="cb5-21"><a href="#cb5-21"></a>  </span>
+<span id="cb5-22"><a href="#cb5-22"></a>  <span class="kw">return</span>(df_all)</span>
+<span id="cb5-23"><a href="#cb5-23"></a>} </span></code></pre></div>
 <p>This function is run across all three input dataframes and then merged into a single dataframe:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Combine data</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>df_all &lt;-<span class="st"> </span><span class="kw">map2_df</span>(<span class="dt">.x =</span> files,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>                  <span class="dt">.y =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>, <span class="st">&quot;deaths&quot;</span>, <span class="st">&quot;recovered&quot;</span>),</span>
-<span id="cb5-4"><a href="#cb5-4"></a>                  <span class="dt">.f =</span> <span class="cf">function</span>(x,y) <span class="kw">dataToLong</span>(x,y))</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Combine data</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>df_all &lt;-<span class="st"> </span><span class="kw">map2_df</span>(<span class="dt">.x =</span> files,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>                  <span class="dt">.y =</span> <span class="kw">c</span>(<span class="st">&quot;cases&quot;</span>, <span class="st">&quot;deaths&quot;</span>, <span class="st">&quot;recovered&quot;</span>),</span>
+<span id="cb6-4"><a href="#cb6-4"></a>                  <span class="dt">.f =</span> <span class="cf">function</span>(x,y) <span class="kw">dataToLong</span>(x,y))</span></code></pre></div>
 <h1 id="calculate-additional-metrics">Calculate Additional Metrics</h1>
 <p>Some additional metrics are calculated from the raw data:</p>
 <ul>
@@ -686,68 +688,68 @@ body {
 </ul>
 <!-- end list -->
 
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># calculate when the first reported case was</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>firstOutbreak &lt;-<span class="st"> </span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;cases&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">firstOutbreak =</span> date) <span class="op">%&gt;%</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
-<span id="cb6-10"><a href="#cb6-10"></a></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co"># do the same as above, but this time work out when they passed the 200th case</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a>first200Outbreak &lt;-<span class="st"> </span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;cases&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">200</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first200Outbreak =</span> date) <span class="op">%&gt;%</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
-<span id="cb6-20"><a href="#cb6-20"></a></span>
-<span id="cb6-21"><a href="#cb6-21"></a>firstDeath &lt;-<span class="st"> </span></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;deaths&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">firstDeath =</span> date) <span class="op">%&gt;%</span></span>
-<span id="cb6-28"><a href="#cb6-28"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
-<span id="cb6-29"><a href="#cb6-29"></a></span>
-<span id="cb6-30"><a href="#cb6-30"></a>first10Deaths &lt;-<span class="st"> </span></span>
-<span id="cb6-31"><a href="#cb6-31"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
-<span id="cb6-32"><a href="#cb6-32"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;deaths&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-33"><a href="#cb6-33"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) <span class="op">%&gt;%</span></span>
-<span id="cb6-34"><a href="#cb6-34"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
-<span id="cb6-35"><a href="#cb6-35"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
-<span id="cb6-36"><a href="#cb6-36"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first10Deaths =</span> date) <span class="op">%&gt;%</span></span>
-<span id="cb6-37"><a href="#cb6-37"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
-<span id="cb6-38"><a href="#cb6-38"></a></span>
-<span id="cb6-39"><a href="#cb6-39"></a><span class="co"># Calculate additional metrics such as rate of contagion</span></span>
-<span id="cb6-40"><a href="#cb6-40"></a>df_cases_extra &lt;-</span>
-<span id="cb6-41"><a href="#cb6-41"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
-<span id="cb6-42"><a href="#cb6-42"></a><span class="st">  </span><span class="kw">left_join</span>(firstOutbreak) <span class="op">%&gt;%</span></span>
-<span id="cb6-43"><a href="#cb6-43"></a><span class="st">  </span><span class="kw">left_join</span>(first200Outbreak) <span class="op">%&gt;%</span></span>
-<span id="cb6-44"><a href="#cb6-44"></a><span class="st">  </span><span class="kw">left_join</span>(firstDeath) <span class="op">%&gt;%</span></span>
-<span id="cb6-45"><a href="#cb6-45"></a><span class="st">  </span><span class="kw">left_join</span>(first10Deaths) <span class="op">%&gt;%</span><span class="st">  </span></span>
-<span id="cb6-46"><a href="#cb6-46"></a><span class="st">  </span><span class="kw">group_by</span>(region, type) <span class="op">%&gt;%</span></span>
-<span id="cb6-47"><a href="#cb6-47"></a><span class="st">  </span><span class="kw">arrange</span>(region, type, date) <span class="op">%&gt;%</span></span>
-<span id="cb6-48"><a href="#cb6-48"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">daysSinceOutbreak =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>firstOutbreak)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb6-49"><a href="#cb6-49"></a>         <span class="dt">daysSinceOutbreak =</span> <span class="kw">ifelse</span>(daysSinceOutbreak <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSinceOutbreak),</span>
-<span id="cb6-50"><a href="#cb6-50"></a>         <span class="dt">daysSinceFirstDeath =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>firstDeath)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb6-51"><a href="#cb6-51"></a>         <span class="dt">daysSinceFirstDeath =</span> <span class="kw">ifelse</span>(daysSinceFirstDeath <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSinceFirstDeath),</span>
-<span id="cb6-52"><a href="#cb6-52"></a>         <span class="dt">daysSince10Deaths =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>first10Deaths)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb6-53"><a href="#cb6-53"></a>         <span class="dt">daysSince10Deaths =</span> <span class="kw">ifelse</span>(daysSince10Deaths <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSince10Deaths),</span>
-<span id="cb6-54"><a href="#cb6-54"></a>         <span class="dt">daysSince200Outbreak =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>first200Outbreak)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb6-55"><a href="#cb6-55"></a>         <span class="dt">daysSince200Outbreak =</span> <span class="kw">ifelse</span>(daysSince200Outbreak <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSince200Outbreak),</span>
-<span id="cb6-56"><a href="#cb6-56"></a>         <span class="dt">changeDaily =</span> value <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(value, <span class="dt">n =</span> <span class="dv">1</span>),</span>
-<span id="cb6-57"><a href="#cb6-57"></a>         <span class="dt">changeWeekly =</span> value <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(value, <span class="dt">n =</span> <span class="dv">7</span>),</span>
-<span id="cb6-58"><a href="#cb6-58"></a>         <span class="dt">changeDailyPerc =</span> <span class="kw">round</span>(changeDaily<span class="op">/</span>value <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">0</span>),</span>
-<span id="cb6-59"><a href="#cb6-59"></a>         <span class="dt">changeDailyPerc =</span> <span class="kw">ifelse</span>(<span class="kw">is.nan</span>(changeDailyPerc), <span class="ot">NA</span>, changeDailyPerc),</span>
-<span id="cb6-60"><a href="#cb6-60"></a>         <span class="dt">changeWeeklyPerc =</span> <span class="kw">round</span>(changeWeekly<span class="op">/</span>value <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">0</span>),</span>
-<span id="cb6-61"><a href="#cb6-61"></a>         <span class="dt">changeWeeklyPerc =</span> <span class="kw">ifelse</span>(<span class="kw">is.nan</span>(changeWeeklyPerc), <span class="ot">NA</span>, changeWeeklyPerc)) <span class="op">%&gt;%</span></span>
-<span id="cb6-62"><a href="#cb6-62"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(firstOutbreak, first200Outbreak, firstDeath, first10Deaths))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># calculate when the first reported case was</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>firstOutbreak &lt;-<span class="st"> </span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;cases&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">firstOutbreak =</span> date) <span class="op">%&gt;%</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co"># do the same as above, but this time work out when they passed the 200th case</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>first200Outbreak &lt;-<span class="st"> </span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;cases&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">200</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first200Outbreak =</span> date) <span class="op">%&gt;%</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
+<span id="cb7-20"><a href="#cb7-20"></a></span>
+<span id="cb7-21"><a href="#cb7-21"></a>firstDeath &lt;-<span class="st"> </span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;deaths&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">firstDeath =</span> date) <span class="op">%&gt;%</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
+<span id="cb7-29"><a href="#cb7-29"></a></span>
+<span id="cb7-30"><a href="#cb7-30"></a>first10Deaths &lt;-<span class="st"> </span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="st">  </span><span class="kw">filter</span>(type <span class="op">==</span><span class="st"> &quot;deaths&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="st">  </span><span class="kw">filter</span>(value <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="st">  </span><span class="kw">group_by</span>(region) <span class="op">%&gt;%</span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="st">  </span><span class="kw">filter</span>(date <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(date)) <span class="op">%&gt;%</span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">first10Deaths =</span> date) <span class="op">%&gt;%</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(date, value, type))</span>
+<span id="cb7-38"><a href="#cb7-38"></a></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co"># Calculate additional metrics such as rate of contagion</span></span>
+<span id="cb7-40"><a href="#cb7-40"></a>df_cases_extra &lt;-</span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="st">  </span>df_all <span class="op">%&gt;%</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="st">  </span><span class="kw">left_join</span>(firstOutbreak) <span class="op">%&gt;%</span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="st">  </span><span class="kw">left_join</span>(first200Outbreak) <span class="op">%&gt;%</span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="st">  </span><span class="kw">left_join</span>(firstDeath) <span class="op">%&gt;%</span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="st">  </span><span class="kw">left_join</span>(first10Deaths) <span class="op">%&gt;%</span><span class="st">  </span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="st">  </span><span class="kw">group_by</span>(region, type) <span class="op">%&gt;%</span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="st">  </span><span class="kw">arrange</span>(region, type, date) <span class="op">%&gt;%</span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">daysSinceOutbreak =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>firstOutbreak)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-49"><a href="#cb7-49"></a>         <span class="dt">daysSinceOutbreak =</span> <span class="kw">ifelse</span>(daysSinceOutbreak <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSinceOutbreak),</span>
+<span id="cb7-50"><a href="#cb7-50"></a>         <span class="dt">daysSinceFirstDeath =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>firstDeath)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-51"><a href="#cb7-51"></a>         <span class="dt">daysSinceFirstDeath =</span> <span class="kw">ifelse</span>(daysSinceFirstDeath <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSinceFirstDeath),</span>
+<span id="cb7-52"><a href="#cb7-52"></a>         <span class="dt">daysSince10Deaths =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>first10Deaths)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-53"><a href="#cb7-53"></a>         <span class="dt">daysSince10Deaths =</span> <span class="kw">ifelse</span>(daysSince10Deaths <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSince10Deaths),</span>
+<span id="cb7-54"><a href="#cb7-54"></a>         <span class="dt">daysSince200Outbreak =</span> <span class="kw">as.numeric</span>(date <span class="op">-</span><span class="st"> </span>first200Outbreak)<span class="op">/</span><span class="dv">86400</span> <span class="op">+</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb7-55"><a href="#cb7-55"></a>         <span class="dt">daysSince200Outbreak =</span> <span class="kw">ifelse</span>(daysSince200Outbreak <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>, <span class="ot">NA</span>, daysSince200Outbreak),</span>
+<span id="cb7-56"><a href="#cb7-56"></a>         <span class="dt">changeDaily =</span> value <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(value, <span class="dt">n =</span> <span class="dv">1</span>),</span>
+<span id="cb7-57"><a href="#cb7-57"></a>         <span class="dt">changeWeekly =</span> value <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(value, <span class="dt">n =</span> <span class="dv">7</span>),</span>
+<span id="cb7-58"><a href="#cb7-58"></a>         <span class="dt">changeDailyPerc =</span> <span class="kw">round</span>(changeDaily<span class="op">/</span>value <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">0</span>),</span>
+<span id="cb7-59"><a href="#cb7-59"></a>         <span class="dt">changeDailyPerc =</span> <span class="kw">ifelse</span>(<span class="kw">is.nan</span>(changeDailyPerc), <span class="ot">NA</span>, changeDailyPerc),</span>
+<span id="cb7-60"><a href="#cb7-60"></a>         <span class="dt">changeWeeklyPerc =</span> <span class="kw">round</span>(changeWeekly<span class="op">/</span>value <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dv">0</span>),</span>
+<span id="cb7-61"><a href="#cb7-61"></a>         <span class="dt">changeWeeklyPerc =</span> <span class="kw">ifelse</span>(<span class="kw">is.nan</span>(changeWeeklyPerc), <span class="ot">NA</span>, changeWeeklyPerc)) <span class="op">%&gt;%</span></span>
+<span id="cb7-62"><a href="#cb7-62"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">c</span>(firstOutbreak, first200Outbreak, firstDeath, first10Deaths))</span></code></pre></div>
 <pre><code>## Joining, by = &quot;region&quot;
 ## Joining, by = &quot;region&quot;
 ## Joining, by = &quot;region&quot;
@@ -755,68 +757,68 @@ body {
 </code></pre>
 <h1 id="load-population-data">Load Population Data</h1>
 <p>To calculate normalised infection rates, we will use the population dataset from the <a href="https://data.worldbank.org/indicator/SP.POP.TOTL">WorldBank</a>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># World bank population estimates</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a>pop &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;dataIn/worldBankPop.csv&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>                <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">select</span>(<span class="kw">c</span>(<span class="st">&quot;Country Name&quot;</span>, <span class="st">&quot;2018&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="st">  </span><span class="kw">set_names</span>(<span class="st">&quot;region&quot;</span>, <span class="st">&quot;pop&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop =</span> <span class="kw">round</span>(pop<span class="op">/</span><span class="dv">10</span><span class="op">^</span><span class="dv">6</span>, <span class="dv">2</span>),</span>
-<span id="cb8-7"><a href="#cb8-7"></a>         <span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># World bank population estimates</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>pop &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;dataIn/worldBankPop.csv&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3"></a>                <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="st">  </span><span class="kw">select</span>(<span class="kw">c</span>(<span class="st">&quot;Country Name&quot;</span>, <span class="st">&quot;2018&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="st">  </span><span class="kw">set_names</span>(<span class="st">&quot;region&quot;</span>, <span class="st">&quot;pop&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pop =</span> <span class="kw">round</span>(pop<span class="op">/</span><span class="dv">10</span><span class="op">^</span><span class="dv">6</span>, <span class="dv">2</span>),</span>
+<span id="cb9-7"><a href="#cb9-7"></a>         <span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span></code></pre></div>
 <pre><code>## Warning: Missing column names filled in: &#39;X65&#39; [65]
 </code></pre>
 <p>This is merged with the full dataset and then used to calculate the infection rates:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Merge data with shapefile</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># Normalise rates</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a>df_all_extra &lt;-<span class="st"> </span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="st">  </span>df_cases_extra <span class="op">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="st">  </span><span class="kw">left_join</span>(pop) <span class="op">%&gt;%</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">value =</span> <span class="kw">replace_na</span>(value, <span class="dv">0</span>),</span>
-<span id="cb10-7"><a href="#cb10-7"></a>         <span class="dt">casespermillion =</span> <span class="kw">round</span>(value<span class="op">/</span>pop, <span class="dv">2</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="st">  </span><span class="kw">arrange</span>(region, date)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Merge data with shapefile</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co"># Normalise rates</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>df_all_extra &lt;-<span class="st"> </span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span>df_cases_extra <span class="op">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="st">  </span><span class="kw">left_join</span>(pop) <span class="op">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">value =</span> <span class="kw">replace_na</span>(value, <span class="dv">0</span>),</span>
+<span id="cb11-7"><a href="#cb11-7"></a>         <span class="dt">casespermillion =</span> <span class="kw">round</span>(value<span class="op">/</span>pop, <span class="dv">2</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="st">  </span><span class="kw">arrange</span>(region, date)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;region&quot;
 </code></pre>
 <h1 id="income-groups">Income Groups</h1>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>income_group &lt;-<span class="st"> </span><span class="kw">read_csv</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;data/dataIn/WorldIncomeGroups.csv&quot;</span>), <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> &quot;Fiscal Year 2020&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="st">  </span><span class="kw">select</span>(<span class="kw">c</span>(<span class="st">&quot;Economy&quot;</span>, <span class="st">&quot;Income Group&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="st">  </span><span class="kw">set_names</span>(<span class="st">&quot;region&quot;</span>, <span class="st">&quot;Income&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span>
-<span id="cb12-6"><a href="#cb12-6"></a></span>
-<span id="cb12-7"><a href="#cb12-7"></a></span>
-<span id="cb12-8"><a href="#cb12-8"></a>df_all_extra &lt;-<span class="st"> </span></span>
-<span id="cb12-9"><a href="#cb12-9"></a><span class="st">  </span>df_all_extra <span class="op">%&gt;%</span></span>
-<span id="cb12-10"><a href="#cb12-10"></a><span class="st">  </span><span class="kw">left_join</span>(income_group)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>income_group &lt;-<span class="st"> </span><span class="kw">read_csv</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;data/dataIn/WorldIncomeGroups.csv&quot;</span>), <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">filter</span>(Year <span class="op">==</span><span class="st"> &quot;Fiscal Year 2020&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="st">  </span><span class="kw">select</span>(<span class="kw">c</span>(<span class="st">&quot;Economy&quot;</span>, <span class="st">&quot;Income Group&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="st">  </span><span class="kw">set_names</span>(<span class="st">&quot;region&quot;</span>, <span class="st">&quot;Income&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a></span>
+<span id="cb13-8"><a href="#cb13-8"></a>df_all_extra &lt;-<span class="st"> </span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="st">  </span>df_all_extra <span class="op">%&gt;%</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="st">  </span><span class="kw">left_join</span>(income_group)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;region&quot;
 </code></pre>
 <h1 id="spatial-data">Spatial Data</h1>
 <p>Spatial data is useful for visualising the datasets. These are formatted to be consistent with the second dataset, making renaming the fields to match and altering names to match to enable an easy spatial join:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Load global boundaries</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>world_map &lt;-<span class="st"> </span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="st">  </span>spData<span class="op">::</span>world <span class="op">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="st">  </span><span class="kw">select</span>(name_long, continent) <span class="op">%&gt;%</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;region&quot;</span> =<span class="st"> &quot;name_long&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb14-7"><a href="#cb14-7"></a><span class="st">  </span><span class="kw">filter</span>(region <span class="op">!=</span><span class="st"> &quot;Antarctica&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Not useful display antartica</span></span>
-<span id="cb14-8"><a href="#cb14-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Load global boundaries</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>world_map &lt;-<span class="st"> </span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="st">  </span>spData<span class="op">::</span>world <span class="op">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="st">  </span><span class="kw">select</span>(name_long, continent) <span class="op">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="st">  </span><span class="kw">rename</span>(<span class="st">&quot;region&quot;</span> =<span class="st"> &quot;name_long&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="st">  </span><span class="kw">filter</span>(region <span class="op">!=</span><span class="st"> &quot;Antarctica&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Not useful display antartica</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">recode</span>(region, <span class="op">!!!</span>countryNameDict))</span></code></pre></div>
 <p>These can be merged into a single long data format. Note this format is not very efficient for storage as it duplicates the spatial data, but is required to make it easy to use within the <strong>tidyverse</strong> workflow:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># This is not saved as it takes up more space 70+ MBs</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a>df_all_spatial &lt;-<span class="st"> </span></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="st">  </span>df_all_extra <span class="op">%&gt;%</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="st">  </span><span class="kw">left_join</span>(world_map)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># This is not saved as it takes up more space 70+ MBs</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>df_all_spatial &lt;-<span class="st"> </span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="st">  </span>df_all_extra <span class="op">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="st">  </span><span class="kw">left_join</span>(world_map)</span></code></pre></div>
 <pre><code>## Joining, by = &quot;region&quot;
 </code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Retain the continent variable</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>df_all_extra &lt;-<span class="st"> </span></span>
-<span id="cb17-3"><a href="#cb17-3"></a>df_all_spatial <span class="op">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></span>
-<span id="cb17-5"><a href="#cb17-5"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_drop_geometry</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Retain the continent variable</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>df_all_extra &lt;-<span class="st"> </span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>df_all_spatial <span class="op">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="st">  </span><span class="kw">st_as_sf</span>() <span class="op">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_drop_geometry</span>()</span></code></pre></div>
 <h1 id="save-data">Save Data</h1>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">write_csv</span>(df_all_extra, <span class="st">&quot;../data/global/covid_data_global.csv&quot;</span>, <span class="dt">append =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb18-2"><a href="#cb18-2"></a></span>
-<span id="cb18-3"><a href="#cb18-3"></a>sf<span class="op">::</span><span class="kw">write_sf</span>(world_map, <span class="st">&quot;../data/global/covid_data_global_boundaries.geojson&quot;</span>, <span class="dt">delete_dsn =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">write_csv</span>(df_all_extra, <span class="st">&quot;../data/global/covid_data_global.csv&quot;</span>, <span class="dt">append =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a>sf<span class="op">::</span><span class="kw">write_sf</span>(world_map, <span class="st">&quot;../data/global/covid_data_global_boundaries.geojson&quot;</span>, <span class="dt">delete_dsn =</span> T)</span></code></pre></div>
 <p>f</p>
 <h1 id="session-info">Session Info</h1>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.0.0 (2020-04-24)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
 ## Running under: macOS Catalina 10.15.4
@@ -829,24 +831,22 @@ body {
 ## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
 ## 
 ## attached base packages:
-## [1] grid      stats     graphics  grDevices utils     datasets  methods   base     
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] plotly_4.9.2.1  magick_2.3      ggthemr_1.1.0   patchwork_1.0.0 gganimate_1.0.5 maps_3.3.0      glue_1.4.0      metathis_1.0.2 
-##  [9] sf_0.9-2        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1    
-## [17] tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0   tidyverse_1.3.0
+##  [1] sf_0.9-2        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1    
+##  [9] tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0   tidyverse_1.3.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] httr_1.4.1         viridisLite_0.3.0  jsonlite_1.6.1     modelr_0.1.7       assertthat_0.2.1   sp_1.4-1           cellranger_1.1.0  
-##  [8] yaml_2.2.1         progress_1.2.2     pillar_1.4.3       backports_1.1.6    lattice_0.20-41    digest_0.6.25      rvest_0.3.5       
-## [15] colorspace_1.4-1   htmltools_0.4.0    pkgconfig_2.0.3    raster_3.1-5       broom_0.5.6        haven_2.2.0        bookdown_0.18     
-## [22] scales_1.1.0       tweenr_1.0.1       generics_0.0.2     farver_2.0.3       ellipsis_0.3.0     withr_2.2.0        lazyeval_0.2.2    
-## [29] cli_2.0.2          magrittr_1.5       crayon_1.3.4       readxl_1.3.1       evaluate_0.14      fs_1.4.1           fansi_0.4.1       
-## [36] nlme_3.1-147       xml2_1.3.2         class_7.3-17       tools_4.0.0        data.table_1.12.8  prettyunits_1.1.1  hms_0.5.3         
-## [43] lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0       compiler_4.0.0     e1071_1.7-3        rlang_0.4.5        classInt_0.4-3    
-## [50] units_0.6-6        rstudioapi_0.11    htmlwidgets_1.5.1  codetools_0.2-16   gtable_0.3.0       DBI_1.1.0          curl_4.3          
-## [57] R6_2.4.1           lubridate_1.7.8    knitr_1.28         rprojroot_1.3-2    KernSmooth_2.23-16 stringi_1.4.6      Rcpp_1.0.4.6      
-## [64] vctrs_0.2.4        spData_0.3.5       dbplyr_1.4.3       tidyselect_1.0.0   xfun_0.13
+##  [1] Rcpp_1.0.4.6       lubridate_1.7.8    lattice_0.20-41    class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25     
+##  [8] R6_2.4.1           cellranger_1.1.0   backports_1.1.6    reprex_0.3.0       evaluate_0.14      e1071_1.7-3        httr_1.4.1        
+## [15] pillar_1.4.3       rlang_0.4.5        curl_4.3           readxl_1.3.1       rstudioapi_0.11    raster_3.1-5       munsell_0.5.0     
+## [22] broom_0.5.6        compiler_4.0.0     modelr_0.1.7       xfun_0.13          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.0.0  
+## [29] codetools_0.2-16   fansi_0.4.1        crayon_1.3.4       dbplyr_1.4.3       withr_2.2.0        grid_4.0.0         nlme_3.1-147      
+## [36] spData_0.3.5       jsonlite_1.6.1     gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          magrittr_1.5       units_0.6-6       
+## [43] scales_1.1.0       KernSmooth_2.23-16 cli_2.0.2          stringi_1.4.6      fs_1.4.1           sp_1.4-1           xml2_1.3.2        
+## [50] ellipsis_0.3.0     generics_0.0.2     vctrs_0.2.4        tools_4.0.0        glue_1.4.0         hms_0.5.3          yaml_2.2.1        
+## [57] colorspace_1.4-1   classInt_0.4-3     rvest_0.3.5        knitr_1.28         haven_2.2.0
 </code></pre>
 
 </body>
