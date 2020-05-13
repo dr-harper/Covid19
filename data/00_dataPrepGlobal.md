@@ -321,8 +321,8 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] sf_0.9-2        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1    
-    ##  [9] tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0   tidyverse_1.3.0
+    ##  [1] sf_0.9-2        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1     tidyr_1.0.2    
+    ## [10] tibble_3.0.1    ggplot2_3.3.0   tidyverse_1.3.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_1.0.4.6       lubridate_1.7.8    lattice_0.20-41    class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25     
