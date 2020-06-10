@@ -319,22 +319,19 @@ sessionInfo()
     ## [1] grid      stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] shinydashboard_0.7.1 shiny_1.4.0.2        emojifont_0.5.3      plotly_4.9.2.1       magick_2.3           ggthemr_1.1.0       
-    ##  [7] patchwork_1.0.0      gganimate_1.0.5      maps_3.3.0           glue_1.4.1           metathis_1.0.2       sf_0.9-3            
-    ## [13] rmarkdown_2.1        here_0.1             forcats_0.5.0        stringr_1.4.0        dplyr_0.8.5          purrr_0.3.4         
-    ## [19] readr_1.3.1          tidyr_1.0.2          tibble_3.0.1         ggplot2_3.3.0        tidyverse_1.3.0     
+    ##  [1] shinydashboard_0.7.1 shiny_1.4.0.2        emojifont_0.5.3      plotly_4.9.2.1       magick_2.3           ggthemr_1.1.0        patchwork_1.0.0      gganimate_1.0.5     
+    ##  [9] maps_3.3.0           glue_1.4.1           metathis_1.0.2       sf_0.9-3             rmarkdown_2.1        here_0.1             forcats_0.5.0        stringr_1.4.0       
+    ## [17] dplyr_0.8.5          purrr_0.3.4          readr_1.3.1          tidyr_1.0.2          tibble_3.0.1         ggplot2_3.3.0        tidyverse_1.3.0     
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] nlme_3.1-147       fs_1.4.1           lubridate_1.7.8    progress_1.2.2     httr_1.4.1         rprojroot_1.3-2    tools_4.0.0       
-    ##  [8] backports_1.1.7    R6_2.4.1           KernSmooth_2.23-16 spData_0.3.5       DBI_1.1.0          lazyeval_0.2.2     colorspace_1.4-1  
-    ## [15] raster_3.1-5       withr_2.2.0        sp_1.4-1           gridExtra_2.3      tidyselect_1.0.0   prettyunits_1.1.1  curl_4.3          
-    ## [22] compiler_4.0.0     cli_2.0.2          rvest_0.3.5        xml2_1.3.2         labeling_0.3       bookdown_0.18      scales_1.1.1      
-    ## [29] classInt_0.4-3     digest_0.6.25      pkgconfig_2.0.3    htmltools_0.4.0    showtext_0.7-1     highr_0.8          fastmap_1.0.1     
-    ## [36] dbplyr_1.4.3       htmlwidgets_1.5.1  rlang_0.4.6        readxl_1.3.1       sysfonts_0.8       rstudioapi_0.11    farver_2.0.3      
-    ## [43] generics_0.0.2     jsonlite_1.6.1     crosstalk_1.1.0.1  magrittr_1.5       Rcpp_1.0.4.6       munsell_0.5.0      fansi_0.4.1       
-    ## [50] viridis_0.5.1      proto_1.0.0        lifecycle_0.2.0    stringi_1.4.6      yaml_2.2.1         promises_1.1.0     crayon_1.3.4      
-    ## [57] lattice_0.20-41    haven_2.2.0        hms_0.5.3          knitr_1.28         pillar_1.4.4       codetools_0.2-16   reprex_0.3.0      
-    ## [64] packrat_0.5.0      evaluate_0.14      data.table_1.12.8  gifski_0.8.6       modelr_0.1.7       httpuv_1.5.2       vctrs_0.3.0       
-    ## [71] tweenr_1.0.1       cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1   xfun_0.14          mime_0.9           xtable_1.8-4      
-    ## [78] broom_0.5.6        e1071_1.7-3        later_1.0.0        class_7.3-17       viridisLite_0.3.0  showtextdb_2.0     units_0.6-6       
-    ## [85] ellipsis_0.3.1
+    ##  [1] nlme_3.1-147       fs_1.4.1           lubridate_1.7.8    progress_1.2.2     httr_1.4.1         rprojroot_1.3-2    tools_4.0.0        backports_1.1.7   
+    ##  [9] R6_2.4.1           KernSmooth_2.23-16 spData_0.3.5       DBI_1.1.0          lazyeval_0.2.2     colorspace_1.4-1   raster_3.1-5       withr_2.2.0       
+    ## [17] sp_1.4-1           gridExtra_2.3      tidyselect_1.0.0   prettyunits_1.1.1  curl_4.3           compiler_4.0.0     cli_2.0.2          rvest_0.3.5       
+    ## [25] xml2_1.3.2         labeling_0.3       bookdown_0.18      scales_1.1.1       classInt_0.4-3     digest_0.6.25      pkgconfig_2.0.3    htmltools_0.4.0   
+    ## [33] showtext_0.7-1     highr_0.8          fastmap_1.0.1      dbplyr_1.4.3       htmlwidgets_1.5.1  rlang_0.4.6        readxl_1.3.1       sysfonts_0.8      
+    ## [41] rstudioapi_0.11    farver_2.0.3       generics_0.0.2     jsonlite_1.6.1     crosstalk_1.1.0.1  magrittr_1.5       Rcpp_1.0.4.6       munsell_0.5.0     
+    ## [49] fansi_0.4.1        viridis_0.5.1      proto_1.0.0        lifecycle_0.2.0    stringi_1.4.6      yaml_2.2.1         promises_1.1.0     crayon_1.3.4      
+    ## [57] lattice_0.20-41    haven_2.2.0        hms_0.5.3          knitr_1.28         pillar_1.4.4       codetools_0.2-16   reprex_0.3.0       packrat_0.5.0     
+    ## [65] evaluate_0.14      data.table_1.12.8  gifski_0.8.6       modelr_0.1.7       httpuv_1.5.2       vctrs_0.3.0        tweenr_1.0.1       cellranger_1.1.0  
+    ## [73] gtable_0.3.0       assertthat_0.2.1   xfun_0.14          mime_0.9           xtable_1.8-4       broom_0.5.6        e1071_1.7-3        later_1.0.0       
+    ## [81] class_7.3-17       viridisLite_0.3.0  showtextdb_2.0     units_0.6-6        ellipsis_0.3.1
