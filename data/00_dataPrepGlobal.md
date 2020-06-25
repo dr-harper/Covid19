@@ -22,8 +22,6 @@ library(tidyverse)
 library(sf)
 ```
 
-    ## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
-
 # Specify Global Naming
 
 The analysis uses different datasets which slightly different naming
@@ -321,15 +319,16 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] sf_0.9-3        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4     readr_1.3.1     tidyr_1.0.2     tibble_3.0.1   
-    ## [11] ggplot2_3.3.0   tidyverse_1.3.0
+    ##  [1] maps_3.3.0      glue_1.4.1      metathis_1.0.2  sf_0.9-3        rmarkdown_2.1   here_0.1        forcats_0.5.0   stringr_1.4.0   dplyr_0.8.5     purrr_0.3.4    
+    ## [11] readr_1.3.1     tidyr_1.0.2     tibble_3.0.1    ggplot2_3.3.0   tidyverse_1.3.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_1.0.4.6       lubridate_1.7.8    lattice_0.20-41    class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25      packrat_0.5.0     
-    ##  [9] R6_2.4.1           cellranger_1.1.0   backports_1.1.7    reprex_0.3.0       evaluate_0.14      e1071_1.7-3        httr_1.4.1         pillar_1.4.4      
-    ## [17] rlang_0.4.6        curl_4.3           readxl_1.3.1       rstudioapi_0.11    raster_3.1-5       munsell_0.5.0      broom_0.5.6        compiler_4.0.0    
-    ## [25] modelr_0.1.7       xfun_0.14          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.0.0   codetools_0.2-16   fansi_0.4.1        crayon_1.3.4      
-    ## [33] dbplyr_1.4.3       withr_2.2.0        grid_4.0.0         nlme_3.1-147       spData_0.3.5       jsonlite_1.6.1     gtable_0.3.0       lifecycle_0.2.0   
-    ## [41] DBI_1.1.0          magrittr_1.5       units_0.6-6        scales_1.1.1       KernSmooth_2.23-16 cli_2.0.2          stringi_1.4.6      fs_1.4.1          
-    ## [49] sp_1.4-1           xml2_1.3.2         ellipsis_0.3.1     generics_0.0.2     vctrs_0.3.0        tools_4.0.0        glue_1.4.1         hms_0.5.3         
-    ## [57] yaml_2.2.1         colorspace_1.4-1   classInt_0.4-3     rvest_0.3.5        knitr_1.28         haven_2.2.0
+    ##  [1] Rcpp_1.0.4.6       lubridate_1.7.8    lattice_0.20-41    prettyunits_1.1.1  class_7.3-17       assertthat_0.2.1   rprojroot_1.3-2    digest_0.6.25     
+    ##  [9] packrat_0.5.0      R6_2.4.1           cellranger_1.1.0   backports_1.1.7    reprex_0.3.0       evaluate_0.14      e1071_1.7-3        httr_1.4.1        
+    ## [17] pillar_1.4.4       progress_1.2.2     rlang_0.4.6        curl_4.3           readxl_1.3.1       rstudioapi_0.11    raster_3.1-5       munsell_0.5.0     
+    ## [25] broom_0.5.6        compiler_4.0.0     modelr_0.1.7       xfun_0.14          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.0.0   bookdown_0.18     
+    ## [33] codetools_0.2-16   fansi_0.4.1        crayon_1.3.4       dbplyr_1.4.3       withr_2.2.0        grid_4.0.0         spData_0.3.5       nlme_3.1-147      
+    ## [41] jsonlite_1.6.1     gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          magrittr_1.5       units_0.6-6        scales_1.1.1       KernSmooth_2.23-16
+    ## [49] cli_2.0.2          stringi_1.4.6      farver_2.0.3       fs_1.4.1           sp_1.4-1           xml2_1.3.2         ellipsis_0.3.1     generics_0.0.2    
+    ## [57] vctrs_0.3.0        tools_4.0.0        tweenr_1.0.1       hms_0.5.3          yaml_2.2.1         colorspace_1.4-1   classInt_0.4-3     rvest_0.3.5       
+    ## [65] knitr_1.28         haven_2.2.0
