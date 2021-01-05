@@ -68,6 +68,25 @@ set_swatch(c(
   "#569b7f", "#292217"
 ))
 
+# fix bug in set colour https://github.com/Mikata-Project/ggthemr/issues/44
+swatch_pal <- function() {
+  function(n) {
+    if(n > length(swatch()) - 1) warning(paste("Swatch only has", length(swatch())-1), " colours")
+    color_list <- as.character(swatch()[2:length(swatch())])
+    return(color_list[1:n])
+  }
+}
+
+scale_colour_ggthemr_d <- function(...) {
+  ggplot2::discrete_scale(
+    "colour", "ggthemr_swatch_color",
+    swatch_pal(),
+    ...
+  )
+}
+
+scale_color_ggthemr_d <- scale_colour_ggthemr_d
+
 ```
 
 
@@ -139,10 +158,6 @@ fluidRow(
     fill = TRUE
   ),
   infoBox(
-    "Recovered", metrics$recovered, icon = icon("hospital"), color = "green",
-    fill = TRUE
-  ),
-  infoBox(
     "Number of Deaths Rank Globally",  scales::ordinal(globalRank), icon = icon("hospital"), color = "purple",
     fill = TRUE
   )
@@ -161,6 +176,7 @@ p1 <-
   filter(type != "recovered") %>%
   ggplot(aes(x = date, y = value, colour = type)) +
   geom_line(size = 1.4) +
+  scale_color_ggthemr_d() +
   geom_point(aes(text = paste0(stringr::str_to_title(type), ": ", value))) +
   labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
        subtitle = "Logarithmic scale enables us to understand the exponential growth better",
@@ -185,6 +201,7 @@ p2 <-
   df_country %>%
   filter(type != "recovered") %>%
   ggplot(aes(x = date, y = value, colour = type)) +
+  scale_color_ggthemr_d() +
   geom_line(size = 1.4) +
   labs(title = glue::glue("Cumulative Cases and Deaths in {country}", country = params$country),
        subtitle = glue::glue("Linear plots make it hard to visualise whether the exponential growth is being controlled"),
@@ -274,6 +291,7 @@ baseplot <-
   # Show label for selected country
   geom_point(data = df2_selectedcountry_plot2, colour = "#3a6589", size = 2) +
   geom_label(data = df2_selectedcountry_plot2, aes(label = area), colour = "#3a6589", vjust = -1) +
+  scale_color_ggthemr_d() +
   labs(x = "Days Since 10th Death",
        y = "Cumulative Number of Deaths",
        fill = "Country",
@@ -400,6 +418,7 @@ baseplot <-
        title = glue::glue("COVID-19 daily change in deaths: {country} vs. other countries", country = params$country),
        subtitle = "3 day moving average of the number of deaths",
        caption = caption) +
+  scale_color_ggthemr_d() +
   scale_x_continuous(expand = c(0, 0), breaks = c(0, 7, 14, 21, 28, 35, 42, 49)) +
   coord_cartesian(xlim = c(0, 55)) +
   theme(
@@ -414,13 +433,7 @@ baseplot
 
 ```
 
-
-```{block2, type = "rmdinfo", echo = T}
-More charts will be added in the next few days. Make sure to check back for updates.
-```
-
 # Data
-
 
 This analysis is largely based on the Johns Hopkins Novel Coronavirus Dataset, which is [available here](https://github.com/CSSEGISandData/COVID-19/blob/master/README.md). It is an aggregation of a range of different Coronavirus datasets, and is seen as the best globally available. Countries may offer high resolution datasets, but these are not always made publicly available in an easy format, so may not make it into the dataset. It is possible that better data is available for your country of selection.
 
@@ -461,7 +474,7 @@ as_meta(openGraph)
 
 # Feedback and Support
 
-Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them! This analysis is all done as voluntary work around my job, and I am competing to get time to support this work. If you would like to show your gratitude, it would be great if you could [donate](https://www.buymeacoffee.com/BXFAIV5) to support this effort.
+Have any graphs you would like to see made in this website? [Reach out to me](about) with suggestions and I would love to add them!
 
 # Comments
 
